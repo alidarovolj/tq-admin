@@ -11,6 +11,7 @@ import {
   HomeIcon,
   UsersIcon,
   XMarkIcon,
+  PlusCircleIcon
 } from '@heroicons/vue/24/outline'
 import {RouterLink, useRoute} from "vue-router";
 import {storeToRefs} from "pinia";
@@ -18,12 +19,16 @@ import {storeToRefs} from "pinia";
 const route = useRoute()
 
 const navigation = [
-  {name: 'Главная панель', href: '/', icon: HomeIcon, alias: 'Dashboard'},
-  {name: 'Пользователи', href: '/users', icon: UsersIcon, alias: 'Users'},
-  {name: 'Продукты', href: '/products', icon: FolderIcon, alias: 'Products'},
-  {name: 'Категории', href: '#', icon: TagIcon, alias: 'Categories'},
-  {name: 'Бренды', href: '#', icon: DocumentDuplicateIcon, alias: 'Brands'},
-  {name: 'Статистика', href: '#', icon: ChartPieIcon, alias: 'Statistics'},
+  {name: 'Главная панель', href: '/', icon: HomeIcon, alias: 'Dashboard', children: []},
+  {name: 'Пользователи', href: '/users', icon: UsersIcon, alias: 'Users', children: []},
+  {
+    name: 'Продукты', href: '/products', icon: FolderIcon, alias: 'Products', children: [
+      {name: 'Создание', href: '/products/create', icon: PlusCircleIcon, alias: 'ProductsCreate', children: []}
+    ]
+  },
+  {name: 'Категории', href: '/categories', icon: TagIcon, alias: 'Categories', children: []},
+  {name: 'Бренды', href: '#', icon: DocumentDuplicateIcon, alias: 'Brands', children: []},
+  {name: 'Статистика', href: '#', icon: ChartPieIcon, alias: 'Statistics', children: []},
 ]
 const teams = [
   {id: 1, name: 'Heroicons', href: '#', initial: 'H', alias: '...'},
@@ -124,6 +129,22 @@ onMounted(async () => {
                             />
                             {{ item.name }}
                           </RouterLink>
+                          <div
+                              v-if="item.children.length > 0"
+                              class="pl-4">
+                            <RouterLink
+                                v-for="(child, ind) in item.children"
+                                :key="ind"
+                                :to="child.href"
+                                :class="[route.name === child.alias ? 'bg-gray-50 text-mainColor' : 'text-gray-700 hover:bg-gray-50 hover:text-mainColor', 'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6']">
+                              <component
+                                  :is="child.icon"
+                                  :class="[route.name === child.alias ? 'text-mainColor' : 'text-gray-400 group-hover:text-mainColor', 'h-6 w-6 shrink-0']"
+                                  aria-hidden="true"
+                              />
+                              {{ child.name }}
+                            </RouterLink>
+                          </div>
                         </li>
                       </ul>
                     </li>
@@ -160,7 +181,7 @@ onMounted(async () => {
     </TransitionRoot>
 
     <!-- Static sidebar for desktop -->
-    <div class="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
+    <div class="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-72 lg:flex-col">
       <!-- Sidebar component, swap this element with another sidebar if you like -->
       <div class="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6">
         <div class="flex h-16 shrink-0 items-center">
@@ -181,15 +202,31 @@ onMounted(async () => {
                 <li
                     v-for="item in navigation"
                     :key="item.name">
-                  <a
-                      :href="item.href"
+                  <RouterLink
+                      :to="item.href"
                       :class="[route.name === item.alias ? 'bg-gray-50 text-mainColor' : 'text-gray-700 hover:bg-gray-50 hover:text-mainColor', 'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6']">
                     <component
                         :is="item.icon"
                         :class="[route.name === item.alias ? 'text-mainColor' : 'text-gray-400 group-hover:text-mainColor', 'h-6 w-6 shrink-0']"
                         aria-hidden="true"/>
                     {{ item.name }}
-                  </a>
+                  </RouterLink>
+                  <div
+                      v-if="item.children.length > 0"
+                      class="pl-4">
+                    <RouterLink
+                        v-for="(child, ind) in item.children"
+                        :key="ind"
+                        :to="child.href"
+                        :class="[route.name === child.alias ? 'bg-gray-50 text-mainColor' : 'text-gray-700 hover:bg-gray-50 hover:text-mainColor', 'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6']">
+                      <component
+                          :is="child.icon"
+                          :class="[route.name === child.alias ? 'text-mainColor' : 'text-gray-400 group-hover:text-mainColor', 'h-6 w-6 shrink-0']"
+                          aria-hidden="true"
+                      />
+                      {{ child.name }}
+                    </RouterLink>
+                  </div>
                 </li>
               </ul>
             </li>

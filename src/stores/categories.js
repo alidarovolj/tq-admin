@@ -4,24 +4,22 @@ import { api } from "@/utils/axios.js";
 import { useNotificationStore } from "@/stores/notifications.js";
 import { useRoute } from "vue-router";
 
-export const useUsersStore = defineStore('users', () => {
-    const userProfile = ref(null);
-    const userList = ref(null);
-    const createdUser = ref(null);
-    const editedUser = ref(null);
+export const useCategoriesStore = defineStore('categories', () => {
+    const categoriesList = ref(null);
+    const categoriesListWithPG = ref(null);
+    const createdCategory = ref(null);
     const notifications = useNotificationStore();
     const route = useRoute();
 
     return {
-        userProfile,
-        userList,
-        createdUser,
-        editedUser,
-        async getProfile() {
+        categoriesList,
+        categoriesListWithPG,
+        createdCategory,
+        async getCategoriesList() {
             try {
-                const response = await api(`/api/auth/me`, "GET", {}, route.query);
+                const response = await api(`/api/admin/categories/all`, "GET", {}, route.query);
                 const data = response.data;
-                userProfile.value = data;
+                categoriesList.value = data;
             } catch (e) {
                 if (e.response) {
                     if (e.response.status !== 500) {
@@ -35,11 +33,11 @@ export const useUsersStore = defineStore('users', () => {
                 }
             }
         },
-        async getUserList() {
+        async getCategoriesListWithPG() {
             try {
-                const response = await api(`/api/admin/users`, "GET", {}, route.query);
+                const response = await api(`/api/admin/categories`, "GET", {}, route.query);
                 const data = response.data;
-                userList.value = data;
+                categoriesListWithPG.value = data;
             } catch (e) {
                 if (e.response) {
                     if (e.response.status !== 500) {
@@ -53,49 +51,23 @@ export const useUsersStore = defineStore('users', () => {
                 }
             }
         },
-        async createUser(form) {
+        async createCategory(form) {
             try {
-                const response = await api(`/api/admin/users`, "POST", {
+                const response = await api(`/api/admin/categories`, "POST", {
                     body: JSON.stringify(form)
                 }, route.query);
                 const data = response.data;
-                createdUser.value = data;
+                createdCategory.value = data;
             } catch (e) {
                 if (e.response) {
                     if (e.response.status !== 500) {
                         notifications.showNotification("error", "Произошла ошибка", e.response.data.message);
-                        createdUser.value = false;
                     } else {
                         notifications.showNotification("error", "Ошибка сервера!", "Попробуйте позже.");
-                        createdUser.value = false;
                     }
                 } else {
                     console.error(e);
                     notifications.showNotification("error", "Произошла ошибка", "Неизвестная ошибка");
-                    createdUser.value = false;
-                }
-            }
-        },
-        async editUser(form, id) {
-            try {
-                const response = await api(`/api/admin/users/${id}`, "PUT", {
-                    body: JSON.stringify(form)
-                }, route.query);
-                const data = response.data;
-                editedUser.value = data;
-            } catch (e) {
-                if (e.response) {
-                    if (e.response.status !== 500) {
-                        notifications.showNotification("error", "Произошла ошибка", e.response.data.message);
-                        editedUser.value = false;
-                    } else {
-                        notifications.showNotification("error", "Ошибка сервера!", "Попробуйте позже.");
-                        editedUser.value = false;
-                    }
-                } else {
-                    console.error(e);
-                    notifications.showNotification("error", "Произошла ошибка", "Неизвестная ошибка");
-                    editedUser.value = false;
                 }
             }
         }
