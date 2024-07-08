@@ -1,5 +1,5 @@
 <script setup>
-import { PencilSquareIcon } from "@heroicons/vue/24/outline"
+import {PencilSquareIcon} from "@heroicons/vue/24/outline"
 import PaginationBlock from "@/components/PaginationBlock.vue";
 import {useRoute} from "vue-router";
 
@@ -52,8 +52,9 @@ const getNestedProperty = (obj, path) => {
                   v-for="(it, ind) in tableData"
                   :key="ind"
                   class="whitespace-nowrap pl-4 py-5 text-sm text-gray-500"
-                  v-html="getNestedProperty(item, it.fn)"
               >
+                <p v-if="it.type === 'string'" v-html="getNestedProperty(item, it.fn)"></p>
+                <img v-else :src="getNestedProperty(item, it.fn)" alt="image"/>
               </td>
               <td
                   v-if="edit"
@@ -61,7 +62,7 @@ const getNestedProperty = (obj, path) => {
                 <p
                     @click="emit('editValue', item)"
                     class="text-mainColor cursor-pointer w-max">
-                  <PencilSquareIcon class="w-5 h-5" />
+                  <PencilSquareIcon class="w-5 h-5"/>
                 </p>
               </td>
             </tr>
