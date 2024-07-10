@@ -1,13 +1,12 @@
 import { ref } from "vue";
 import { stringify } from "qs";
-import { getQuery } from "ufo";
 import { defu } from "defu";
 import axios from "axios";
 import { useRouter } from "vue-router";
 
 export async function api(url, method, options = {}, query = {}) {
     const token = ref(localStorage.getItem('token'));
-    const router = useRouter();
+    const router = useRouter()
 
     const defaultPage = query.page || 1;
     const defaultPerPage = query.perPage || 10;

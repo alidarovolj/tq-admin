@@ -406,7 +406,7 @@ watch(selectedCategory, () => {
                         v-slot="{ active, selected }">
                       <li :class="[active ? 'bg-indigo-600 text-white' : 'text-gray-900', 'relative cursor-default select-none py-2 pl-3 pr-9']">
                                   <span :class="[selected ? 'font-semibold' : 'font-normal', 'block truncate']">
-                                    {{ category.title }}
+                                    {{ category.title.ru }}
                                   </span>
 
                         <span
@@ -433,8 +433,8 @@ watch(selectedCategory, () => {
                               <span
                                   v-if="selectedFilter"
                                   class="inline-flex w-full truncate">
-                                <span class="truncate">{{ selectedFilter.title }}</span>
-                                <span class="ml-2 truncate text-gray-500">{{ selectedFilter.measure }}</span>
+                                <span class="truncate">{{ selectedFilter.title.ru }}</span>
+                                <span class="ml-2 truncate text-gray-500">{{ selectedFilter.measure.ru }}</span>
                               </span>
                     <span v-else>
                                 Выберите фильтр
@@ -457,10 +457,10 @@ watch(selectedCategory, () => {
                         <li :class="[active ? 'bg-indigo-600 text-white' : 'text-gray-900', 'relative cursor-default select-none py-2 pl-3 pr-9']">
                           <div class="flex">
                                       <span :class="[selected ? 'font-semibold' : 'font-normal', 'truncate']">
-                                        {{ item.title }}
+                                        {{ item.title.ru }}
                                       </span>
                             <span :class="[active ? 'text-indigo-200' : 'text-gray-500', 'ml-2 truncate']">
-                                        {{ item.measure }}
+                                        {{ item.measure.ru }}
                                       </span>
                           </div>
 

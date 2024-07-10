@@ -14,9 +14,8 @@ const {productsList} = storeToRefs(products)
 const tableData = ref([
   {name: "ID", fn: "id", type: "string"},
   {name: "Фото", fn: "image_url", type: "image"},
-  {name: "Название", fn: "title", type: "string"},
-  {name: "Описание", fn: "description", type: "string"},
-  {name: "Категория", fn: "category.title", type: "string"}
+  {name: "Название", fn: "title.ru", type: "string"},
+  {name: "Категория", fn: "category.title.ru", type: "string"}
 ])
 
 const page = ref(route.query.page || 1);

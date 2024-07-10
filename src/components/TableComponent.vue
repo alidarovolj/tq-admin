@@ -1,10 +1,10 @@
 <script setup>
-import {PencilSquareIcon} from "@heroicons/vue/24/outline"
+import {PencilSquareIcon, UserPlusIcon, KeyIcon, TrashIcon} from "@heroicons/vue/24/outline"
 import PaginationBlock from "@/components/PaginationBlock.vue";
 import {useRoute} from "vue-router";
 
-const props = defineProps(['tableData', 'fetchedData', 'edit']);
-const emit = defineEmits(['call_to_refresh', 'editValue']);
+const props = defineProps(['tableData', 'fetchedData', 'edit', 'makeAdmin', 'changePassword', 'removeItem']);
+const emit = defineEmits(['call_to_refresh', 'editValue', 'setAdmin', 'changePassword', 'removeItem']);
 
 const route = useRoute();
 
@@ -12,7 +12,6 @@ const updateData = (data) => {
   emit('call_to_refresh', {page: route.query.page || 1, perPage: route.query.perPage || 10});
 };
 
-// Function to access nested properties
 const getNestedProperty = (obj, path) => {
   return path.split('.').reduce((acc, part) => acc && acc[part], obj);
 };
@@ -54,15 +53,43 @@ const getNestedProperty = (obj, path) => {
                   class="whitespace-nowrap pl-4 py-5 text-sm text-gray-500"
               >
                 <p v-if="it.type === 'string'" v-html="getNestedProperty(item, it.fn)"></p>
-                <img v-else :src="getNestedProperty(item, it.fn)" alt="image"/>
+                <div v-else>
+                  <img
+                      v-if="!getNestedProperty(item, it.fn)"
+                      class="w-10 h-10 min-h-10 min-w-10"
+                      src="@/assets/img/logos/logo.svg"
+                      alt=""
+                  />
+                  <img
+                      v-else
+                      class="w-10 h-10 min-h-10 min-w-10"
+                      :src="getNestedProperty(item, it.fn)"
+                      alt=""
+                  />
+                </div>
               </td>
               <td
-                  v-if="edit"
-                  class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6 lg:pr-8">
+                  v-if="edit || makeAdmin || changePassword || removeItem"
+                  class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6 lg:pr-8 flex gap-1">
                 <p
                     @click="emit('editValue', item)"
                     class="text-mainColor cursor-pointer w-max">
                   <PencilSquareIcon class="w-5 h-5"/>
+                </p>
+                <p
+                    @click="emit('setAdmin', item)"
+                    class="text-mainColor cursor-pointer w-max">
+                  <UserPlusIcon class="w-5 h-5"/>
+                </p>
+                <p
+                    @click="emit('changePassword', item)"
+                    class="text-mainColor cursor-pointer w-max">
+                  <KeyIcon class="w-5 h-5"/>
+                </p>
+                <p
+                    @click="emit('removeItem', item)"
+                    class="text-mainColor cursor-pointer w-max">
+                  <TrashIcon class="w-5 h-5"/>
                 </p>
               </td>
             </tr>

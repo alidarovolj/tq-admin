@@ -31,7 +31,7 @@ const v$ = useVuelidate({
 
 const tableData = ref([
   {name: "ID", fn: "id", type: "string"},
-  {name: "Название", fn: "title", type: "string"},
+  {name: "Название", fn: "title.ru", type: "string"},
 ])
 
 const page = ref(route.query.page || 1);
