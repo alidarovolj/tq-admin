@@ -6,6 +6,7 @@ import dashboardView from '@/views/dashboard/index.vue'
 import productsView from "@/views/products/index.vue";
 import productCreate from "@/views/products/create/index.vue";
 import categoriesView from "@/views/categories/index.vue";
+import productsEdit from "@/views/products/edit/index.vue";
 
 const routes = [
     {
@@ -35,6 +36,12 @@ const routes = [
         path: '/products',
         name: "Products",
         component: productsView,
+        meta: {requiresAuth: true}
+    },
+    {
+        path: '/products/edit/:id',
+        name: "ProductsEdit",
+        component: productsEdit,
         meta: {requiresAuth: true}
     },
     {

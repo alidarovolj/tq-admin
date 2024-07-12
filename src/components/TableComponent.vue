@@ -1,10 +1,10 @@
 <script setup>
-import {PencilSquareIcon, UserPlusIcon, KeyIcon, TrashIcon} from "@heroicons/vue/24/outline"
+import {CheckIcon, KeyIcon, PencilSquareIcon, TrashIcon, UserPlusIcon} from "@heroicons/vue/24/outline"
 import PaginationBlock from "@/components/PaginationBlock.vue";
 import {useRoute} from "vue-router";
 
-const props = defineProps(['tableData', 'fetchedData', 'edit', 'makeAdmin', 'changePassword', 'removeItem']);
-const emit = defineEmits(['call_to_refresh', 'editValue', 'setAdmin', 'changePassword', 'removeItem']);
+const props = defineProps(['tableData', 'fetchedData', 'edit', 'makeAdmin', 'changePassword', 'removeItem', 'setActive']);
+const emit = defineEmits(['call_to_refresh', 'editValue', 'setAdmin', 'changePassword', 'removeItem', 'setActive']);
 
 const route = useRoute();
 
@@ -53,6 +53,18 @@ const getNestedProperty = (obj, path) => {
                   class="whitespace-nowrap pl-4 py-5 text-sm text-gray-500"
               >
                 <p v-if="it.type === 'string'" v-html="getNestedProperty(item, it.fn)"></p>
+                <div v-else-if="it.type === 'boolean'">
+                  <p
+                      v-if="getNestedProperty(item, it.fn)"
+                      class="bg-green-100 text-green-500 w-max px-4 py-2 rounded-xl">
+                    Активирован
+                  </p>
+                  <p
+                      v-else
+                      class="bg-red-100 text-red-500 w-max px-4 py-2 rounded-xl">
+                    Деактивирован
+                  </p>
+                </div>
                 <div v-else>
                   <img
                       v-if="!getNestedProperty(item, it.fn)"
@@ -69,24 +81,34 @@ const getNestedProperty = (obj, path) => {
                 </div>
               </td>
               <td
-                  v-if="edit || makeAdmin || changePassword || removeItem"
-                  class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6 lg:pr-8 flex gap-1">
+                  v-if="edit || makeAdmin || changePassword || removeItem || setActive"
+                  class="pl-4 py-5 relative whitespace-nowrap pr-4 text-right text-sm font-medium sm:pr-6 lg:pr-8 flex gap-1">
                 <p
+                    v-if="edit"
                     @click="emit('editValue', item)"
                     class="text-mainColor cursor-pointer w-max">
                   <PencilSquareIcon class="w-5 h-5"/>
                 </p>
                 <p
+                    v-if="setActive"
+                    @click="emit('setActive', item)"
+                    class="text-mainColor cursor-pointer w-max">
+                  <CheckIcon class="w-5 h-5"/>
+                </p>
+                <p
+                    v-if="makeAdmin"
                     @click="emit('setAdmin', item)"
                     class="text-mainColor cursor-pointer w-max">
                   <UserPlusIcon class="w-5 h-5"/>
                 </p>
                 <p
+                    v-if="changePassword"
                     @click="emit('changePassword', item)"
                     class="text-mainColor cursor-pointer w-max">
                   <KeyIcon class="w-5 h-5"/>
                 </p>
                 <p
+                    v-if="removeItem"
                     @click="emit('removeItem', item)"
                     class="text-mainColor cursor-pointer w-max">
                   <TrashIcon class="w-5 h-5"/>

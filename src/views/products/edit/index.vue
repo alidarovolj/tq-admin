@@ -1,5 +1,5 @@
 <script setup>
-import {onMounted, ref, watch} from "vue";
+import {nextTick, onMounted, ref, watch} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import {useVuelidate} from "@vuelidate/core";
 import {required} from "@vuelidate/validators";
@@ -7,8 +7,7 @@ import {useProductsStore} from "@/stores/products.js";
 import {storeToRefs} from "pinia";
 import {QuillEditor} from '@vueup/vue-quill'
 import '@vueup/vue-quill/dist/vue-quill.snow.css';
-import {Listbox, ListboxButton, ListboxLabel, ListboxOption, ListboxOptions} from "@headlessui/vue";
-import {ArrowLongLeftIcon, CheckIcon, ChevronUpDownIcon, PlusIcon, XMarkIcon} from "@heroicons/vue/24/outline/index.js";
+import {ArrowLongLeftIcon, PlusIcon, XMarkIcon} from "@heroicons/vue/24/outline/index.js";
 import {useCategoriesStore} from "@/stores/categories.js";
 import {useFiltersStore} from "@/stores/filters.js";
 import UploadImage from "@/components/UploadImage.vue";
@@ -28,9 +27,6 @@ const newElementForm = ref({
 })
 
 const newVariant = ref(null)
-
-const selectedCategory = ref(null);
-const selectedFilter = ref(null);
 
 const currentLanguage = ref('ru')
 const currentLanguageFilters = ref('ru')
@@ -119,24 +115,41 @@ const getFilterTitleById = (filterId) => {
   return filter ? filter.title : 'Unknown Filter';
 };
 
-const createProduct = async () => {
+const editProduct = async () => {
   await v$.value.$validate();
 
   if (v$.value.$error) {
     notifications.showNotification("error", "Данные не заполнены", "Проверьте правильность введенных данных и попробуйте снова.");
     return;
   }
-  await products.createProduct(form.value);
-  if (products.createdProduct !== false) {
-    notifications.showNotification("success", "Пользователь успешно создан!", "Пользователь успешно создан, его можно увидеть в списке пользователей.");
+  await products.editProduct(route.params.id, form.value);
+  if (products.editedProduct !== false) {
+    notifications.showNotification("success", "Продукт успешно создан!", "Продукт успешно создан, его можно увидеть в списке продуктов.");
     router.push('/products')
   } else {
-    notifications.showNotification("error", "Ошибка создания пользователя!", "Попробуйте позже.");
+    notifications.showNotification("error", "Ошибка создания продукта!", "Попробуйте позже.");
   }
 };
 
 const fetchData = async () => {
   try {
+    await products.detailProduct(route.params.id);
+    form.value.title = products.detailProductResult.title;
+    form.value.description = products.detailProductResult.description;
+    form.value.image_url = products.detailProductResult.image_url;
+    products.detailProductResult.product_variants.forEach(variant => {
+      form.value.product_variants.push(variant.id);
+    });
+    form.value.category_id = products.detailProductResult.category.id;
+    await nextTick()
+    await filters.getFiltersListByCategory(form.value.category_id);
+    newElementsForm.value = [];
+    filters.filtersListByCategory.forEach(filter => {
+      const elementCopy = JSON.parse(JSON.stringify(newElementForm.value));
+      elementCopy.filter_id = filter.id;
+      newElementsForm.value.push(elementCopy);
+    });
+    await nextTick()
     await categories.getCategoriesList()
     await filters.getFiltersList()
   } catch (error) {
@@ -148,12 +161,10 @@ onMounted(fetchData);
 
 watch([page, perPage], fetchData);
 
-watch(selectedCategory, async () => {
-  form.value.category_id = selectedCategory.value.id;
-  await filters.getFiltersListByCategory(selectedCategory.value.id);
-  newElementsForm.value = []; // Reset the form to ensure it only contains elements for the current category
+watch(form.value.category_id, async () => {
+  await filters.getFiltersListByCategory(form.value.category_id);
+  newElementsForm.value = [];
   filters.filtersListByCategory.forEach(filter => {
-    // Clone newElementForm.value to ensure each element in newElementsForm is a unique object
     const elementCopy = JSON.parse(JSON.stringify(newElementForm.value));
     elementCopy.filter_id = filter.id;
     newElementsForm.value.push(elementCopy);
@@ -163,7 +174,9 @@ watch(selectedCategory, async () => {
 
 <template>
   <div>
-    <div class="px-4 sm:px-6 lg:px-8">
+    <div
+        v-if="products.detailProductResult"
+        class="px-4 sm:px-6 lg:px-8">
       <div>
         <div>
           <div>
@@ -180,18 +193,18 @@ watch(selectedCategory, async () => {
               </RouterLink>
               <div class="flex justify-between mb-5">
                 <p class="font-semibold text-xl">
-                  Создание продукта
+                  Редактирование продукта
                 </p>
                 <button
                     type="button"
                     class="inline-flex w-max justify-center rounded-md bg-mainColor px-3 py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 sm:col-start-2"
-                    @click="createProduct"
+                    @click="editProduct"
                 >
-                  Создать
+                  Сохранить
                 </button>
               </div>
               <p class="text-sm mb-3">
-                Заполните все поля для создания нового продукта.
+                Заполните все поля для успешного редактирования продукта.
               </p>
             </div>
             <div class="rounded-md px-3 pb-1.5 pt-2.5 border mb-3">
@@ -381,62 +394,28 @@ watch(selectedCategory, async () => {
                 </div>
               </div>
             </div>
-            <Listbox
-                as="div"
-                class="mb-3"
-                v-model="selectedCategory"
-            >
-              <ListboxLabel class="block text-xs font-medium text-gray-900">
+            <div v-if="categoriesList" class="mb-3">
+              <p class="block text-xs font-medium text-gray-900">
                 Категория
-              </ListboxLabel>
-              <div class="relative mt-2">
-                <ListboxButton
-                    :class="{ '!border !border-red-500': v$.category_id.$error }"
-                    class="relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                            <span
-                                v-if="selectedCategory"
-                                class="block truncate">
-                              {{ selectedCategory.title.ru }}
-                            </span>
-                  <span v-else>
-                              Выберите категорию
-                            </span>
-                  <span class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-                            <ChevronUpDownIcon class="h-5 w-5 text-gray-400" aria-hidden="true"/>
-                            </span>
-                </ListboxButton>
-
-                <transition
-                    leave-active-class="transition ease-in duration-100"
-                    leave-from-class="opacity-100"
-                    leave-to-class="opacity-0">
-                  <ListboxOptions
-                      class="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                    <ListboxOption
-                        as="template"
-                        v-for="(category, index) in categoriesList.data"
-                        :key="index"
-                        :value="category"
-                        v-slot="{ active, selected }">
-                      <li :class="[active ? 'bg-indigo-600 text-white' : 'text-gray-900', 'relative cursor-default select-none py-2 pl-3 pr-9']">
-                                  <span :class="[selected ? 'font-semibold' : 'font-normal', 'block truncate']">
-                                    {{ category.title.ru }}
-                                  </span>
-
-                        <span
-                            v-if="selected"
-                            :class="[active ? 'text-white' : 'text-indigo-600', 'absolute inset-y-0 right-0 flex items-center pr-4']">
-                                    <CheckIcon class="h-5 w-5" aria-hidden="true"/>
-                                  </span>
-                      </li>
-                    </ListboxOption>
-                  </ListboxOptions>
-                </transition>
-              </div>
-            </Listbox>
+              </p>
+              <select
+                  v-model="form.category_id"
+                  class="w-full px-4 py-3 rounded-md"
+                  name=""
+                  id="">
+                <option :value="null">Выберите категорию</option>
+                <option
+                    v-for="(item, index) of categoriesList.data"
+                    :key="index"
+                    :value="item.id"
+                >
+                  {{ item.title.ru }}
+                </option>
+              </select>
+            </div>
             <div v-if="filtersListByCategory">
               <div
-                  v-if="selectedCategory && filtersListByCategory.length > 0 && newElementsForm.length > 0"
+                  v-if="filtersListByCategory.length > 0 && newElementsForm.length > 0"
                   class="text-xs mb-3">
                 <p class="mb-3 block text-xs font-medium text-gray-900">
                   Выберите фильтры для продукта

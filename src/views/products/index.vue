@@ -4,9 +4,11 @@ import {useRoute, useRouter} from "vue-router";
 import TableComponent from "@/components/TableComponent.vue";
 import {useProductsStore} from "@/stores/products.js";
 import {storeToRefs} from "pinia";
+import {useModalsStore} from "@/stores/modals.js";
 
 const route = useRoute();
 const router = useRouter();
+const modals = useModalsStore()
 
 const products = useProductsStore()
 const {productsList} = storeToRefs(products)
@@ -72,7 +74,9 @@ watch(route.query, async () => {
       <TableComponent
           :tableData="tableData"
           :fetchedData="productsList"
+          :edit="true"
           @call_to_refresh="fetchData"
+          @editValue="(data) => router.push(`/products/edit/${data.id}`)"
       />
     </div>
   </div>
