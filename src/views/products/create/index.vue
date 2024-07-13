@@ -30,7 +30,6 @@ const newElementForm = ref({
 const newVariant = ref(null)
 
 const selectedCategory = ref(null);
-const selectedFilter = ref(null);
 
 const currentLanguage = ref('ru')
 const currentLanguageFilters = ref('ru')

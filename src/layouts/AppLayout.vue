@@ -3,6 +3,7 @@ import {useUsersStore} from "@/stores/users.js";
 import {onMounted, nextTick, ref} from "vue";
 import {Dialog, DialogPanel, TransitionChild, TransitionRoot} from '@headlessui/vue'
 import {
+  LightBulbIcon,
   Bars3Icon,
   TagIcon,
   ChartPieIcon,
@@ -27,6 +28,7 @@ const navigation = [
     ]
   },
   {name: 'Категории', href: '/categories', icon: TagIcon, alias: 'Categories', children: []},
+  {name: 'Идеи', href: '/ideas', icon: LightBulbIcon, alias: 'Ideas', children: []},
   {name: 'Бренды', href: '/brands', icon: DocumentDuplicateIcon, alias: 'Brands', children: []},
   {name: 'Статистика', href: '#', icon: ChartPieIcon, alias: 'Statistics', children: []},
 ]

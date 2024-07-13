@@ -8,6 +8,8 @@ import productCreate from "@/views/products/create/index.vue";
 import categoriesView from "@/views/categories/index.vue";
 import productsEdit from "@/views/products/edit/index.vue";
 import brandsView from "@/views/brands/index.vue";
+import ideasView from "@/views/ideas/index.vue";
+import ideasCreate from "@/views/ideas/create/index.vue";
 
 const routes = [
     {
@@ -37,6 +39,18 @@ const routes = [
         path: '/brands',
         name: "Brands",
         component: brandsView,
+        meta: {requiresAuth: true}
+    },
+    {
+        path: '/ideas',
+        name: "Ideas",
+        component: ideasView,
+        meta: {requiresAuth: true}
+    },
+    {
+        path: '/ideas/create',
+        name: "IdeasCreate",
+        component: ideasCreate,
         meta: {requiresAuth: true}
     },
     {
