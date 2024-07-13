@@ -39,7 +39,7 @@ const products = useProductsStore()
 const categories = useCategoriesStore()
 const {categoriesList} = storeToRefs(categories)
 const filters = useFiltersStore()
-const {filtersList, filtersListByCategory} = storeToRefs(filters)
+const {filtersListByCategory} = storeToRefs(filters)
 const notifications = useNotificationStore()
 
 const form = ref({
@@ -115,7 +115,7 @@ onMounted(() => {
 watch([page, perPage], updateQueryParams, {deep: true});
 
 const getFilterTitleById = (filterId) => {
-  const filter = filtersList.value.data.find(filter => filter.id === filterId);
+  const filter = filtersListByCategory.value.find(filter => filter.id === filterId);
   return filter ? filter.title : 'Unknown Filter';
 };
 
@@ -128,10 +128,10 @@ const createProduct = async () => {
   }
   await products.createProduct(form.value);
   if (products.createdProduct !== false) {
-    notifications.showNotification("success", "Пользователь успешно создан!", "Пользователь успешно создан, его можно увидеть в списке пользователей.");
+    notifications.showNotification("success", "Продукт успешно создан!", "Продукт успешно создан, его можно увидеть в списке продуктов.");
     router.push('/products')
   } else {
-    notifications.showNotification("error", "Ошибка создания пользователя!", "Попробуйте позже.");
+    notifications.showNotification("error", "Ошибка создания продукта!", "Попробуйте позже.");
   }
 };
 

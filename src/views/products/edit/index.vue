@@ -35,7 +35,7 @@ const products = useProductsStore()
 const categories = useCategoriesStore()
 const {categoriesList} = storeToRefs(categories)
 const filters = useFiltersStore()
-const {filtersList, filtersListByCategory} = storeToRefs(filters)
+const {filtersListByCategory} = storeToRefs(filters)
 const notifications = useNotificationStore()
 
 const form = ref({
@@ -111,7 +111,7 @@ onMounted(() => {
 watch([page, perPage], updateQueryParams, {deep: true});
 
 const getFilterTitleById = (filterId) => {
-  const filter = filtersList.value.data.find(filter => filter.id === filterId);
+  const filter = filtersListByCategory.value.find(filter => filter.id === filterId);
   return filter ? filter.title : 'Unknown Filter';
 };
 
@@ -142,6 +142,7 @@ const fetchData = async () => {
     });
     form.value.category_id = products.detailProductResult.category.id;
     await nextTick()
+    // Get filters by category
     await filters.getFiltersListByCategory(form.value.category_id);
     newElementsForm.value = [];
     filters.filtersListByCategory.forEach(filter => {
@@ -149,9 +150,15 @@ const fetchData = async () => {
       elementCopy.filter_id = filter.id;
       newElementsForm.value.push(elementCopy);
     });
+    products.detailProductResult.filter_data.forEach(filter => {
+      let elem = {}
+      elem.filter_id = filter.id;
+      elem.value = filter.value;
+      form.value.filter_data.push(elem);
+    });
     await nextTick()
     await categories.getCategoriesList()
-    await filters.getFiltersList()
+    await filters.getFiltersListByCategory(form.value.category_id);
   } catch (error) {
     console.error(error);
   }
@@ -161,7 +168,8 @@ onMounted(fetchData);
 
 watch([page, perPage], fetchData);
 
-watch(form.value.category_id, async () => {
+watch(() => form.value.category_id, async () => {
+  console.log("category_id changed")
   await filters.getFiltersListByCategory(form.value.category_id);
   newElementsForm.value = [];
   filters.filtersListByCategory.forEach(filter => {
@@ -169,7 +177,7 @@ watch(form.value.category_id, async () => {
     elementCopy.filter_id = filter.id;
     newElementsForm.value.push(elementCopy);
   });
-});
+}, {deep: true});
 </script>
 
 <template>
@@ -504,27 +512,27 @@ watch(form.value.category_id, async () => {
                     </div>
                   </div>
                 </div>
-                <div v-if="form.filter_data.length > 0" class="mt-3">
-                  <p class="block text-xs font-medium text-gray-900">
-                    Выбранные фильтры
+              </div>
+            </div>
+            <div v-if="form.filter_data.length > 0" class="mt-3 text-xs">
+              <p class="block font-medium text-gray-900">
+                Выбранные фильтры
+              </p>
+              <div class="flex flex-wrap gap-2">
+                <div
+                    v-for="(filter, ind) of form.filter_data"
+                    :key="ind"
+                    class="flex items-center bg-gray-100 p-2 gap-1 rounded-md">
+                  <p>
+                    {{ getFilterTitleById(filter.filter_id).ru }}:
                   </p>
-                  <div class="flex flex-wrap gap-2">
-                    <div
-                        v-for="(filter, ind) of form.filter_data"
-                        :key="ind"
-                        class="flex items-center bg-gray-100 p-2 gap-1 rounded-md">
-                      <p>
-                        {{ getFilterTitleById(filter.filter_id).ru }}:
-                      </p>
-                      <p>
-                        {{ filter.value.ru }}
-                      </p>
-                      <XMarkIcon
-                          @click="form.filter_data.splice(ind, 1)"
-                          class="w-5 h-5 text-red-500 cursor-pointer"
-                      />
-                    </div>
-                  </div>
+                  <p>
+                    {{ filter.value.ru }}
+                  </p>
+                  <XMarkIcon
+                      @click="form.filter_data.splice(ind, 1)"
+                      class="w-5 h-5 text-red-500 cursor-pointer"
+                  />
                 </div>
               </div>
             </div>

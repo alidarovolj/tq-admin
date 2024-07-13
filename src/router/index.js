@@ -7,6 +7,7 @@ import productsView from "@/views/products/index.vue";
 import productCreate from "@/views/products/create/index.vue";
 import categoriesView from "@/views/categories/index.vue";
 import productsEdit from "@/views/products/edit/index.vue";
+import brandsView from "@/views/brands/index.vue";
 
 const routes = [
     {
@@ -30,6 +31,12 @@ const routes = [
         path: '/categories',
         name: "Categories",
         component: categoriesView,
+        meta: {requiresAuth: true}
+    },
+    {
+        path: '/brands',
+        name: "Brands",
+        component: brandsView,
         meta: {requiresAuth: true}
     },
     {

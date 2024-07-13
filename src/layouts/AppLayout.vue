@@ -27,7 +27,7 @@ const navigation = [
     ]
   },
   {name: 'Категории', href: '/categories', icon: TagIcon, alias: 'Categories', children: []},
-  {name: 'Бренды', href: '#', icon: DocumentDuplicateIcon, alias: 'Brands', children: []},
+  {name: 'Бренды', href: '/brands', icon: DocumentDuplicateIcon, alias: 'Brands', children: []},
   {name: 'Статистика', href: '#', icon: ChartPieIcon, alias: 'Statistics', children: []},
 ]
 const teams = [
