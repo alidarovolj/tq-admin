@@ -15,7 +15,7 @@ const {productsList} = storeToRefs(products)
 
 const tableData = ref([
   {name: "ID", fn: "id", type: "string"},
-  {name: "Артикль", fn: "article", type: "string"},
+  {name: "Артикул", fn: "article", type: "string"},
   {name: "Фото", fn: "image_url", type: "image"},
   {name: "Название", fn: "title.ru", type: "string"},
   {name: "Статус", fn: "is_active", type: "boolean"},
