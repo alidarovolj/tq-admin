@@ -66,7 +66,7 @@ const createCategory = async () => {
   }
   await categories.createCategory(form.value);
   if (categories.createdCategory !== false) {
-    await categories.getCategoriesList()
+    await categories.getCategoriesListWithPG()
     notifications.showNotification("success", "Категория успешно создана!", "Категория успешно создана, ее можно увидеть в списке категорий.");
     modals.modal.show = false;
   } else {
@@ -197,12 +197,6 @@ watch([page, perPage], fetchData);
                   type="products"
                   @photoUploaded="(image) => form.image_url = image"
               />
-              <img
-                  v-if="form.image_url"
-                  class="h-20 w-max object-contain"
-                  :class="{ 'mt-5' : form.image_url }"
-                  :src="form.image_url"
-                  alt="">
             </div>
             <div v-if="filtersList">
               <fieldset>

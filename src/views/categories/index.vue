@@ -15,6 +15,7 @@ const modals = useModalsStore()
 
 const tableData = ref([
   {name: "ID", fn: "id", type: "string"},
+  {name: "Фото", fn: "image_url", type: "image"},
   {name: "Название", fn: "title.ru", type: "string"},
   {name: "Статус", fn: "is_active", type: "boolean"},
 ])
@@ -77,8 +78,9 @@ watch(route.query, async () => {
       <TableComponent
           :tableData="tableData"
           :fetchedData="categoriesListWithPG"
-          :set-active="true"
+          :set-active="'is_active'"
           :edit="true"
+          :search="true"
           @call_to_refresh="fetchData"
           @set-active="setActive"
           @editValue="(data) => modals.showModal('EditCategory', data)"

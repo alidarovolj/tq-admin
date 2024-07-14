@@ -41,11 +41,7 @@ const authorizeUser = async () => {
       notifications.showNotification("error", "Токен не получен", "Попробуйте позже.");
     }
   } catch (e) {
-    if (e.response.status !== 500) {
-      notifications.showNotification("error", "Ошибка валидации данных!", e.response.data.message);
-    } else {
-      notifications.showNotification("error", "Ошибка сервера!", "Попробуйте позже.");
-    }
+    notifications.showNotification("error", "Ошибка авторизации!", "Проверьте правильность введенных данных и попробуйте снова.");
   }
 }
 </script>

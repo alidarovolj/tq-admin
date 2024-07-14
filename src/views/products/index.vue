@@ -15,8 +15,10 @@ const {productsList} = storeToRefs(products)
 
 const tableData = ref([
   {name: "ID", fn: "id", type: "string"},
+  {name: "Артикль", fn: "article", type: "string"},
   {name: "Фото", fn: "image_url", type: "image"},
   {name: "Название", fn: "title.ru", type: "string"},
+  {name: "Статус", fn: "is_active", type: "boolean"},
   {name: "Категория", fn: "category.title.ru", type: "string"}
 ])
 
@@ -75,8 +77,13 @@ watch(route.query, async () => {
           :tableData="tableData"
           :fetchedData="productsList"
           :edit="true"
+          :search="true"
+          :set-active="'is_active'"
+          :remove-item="true"
           @call_to_refresh="fetchData"
           @editValue="(data) => router.push(`/products/edit/${data.id}`)"
+          @setActive="(data) => modals.showModal('SetActiveProduct', data)"
+          @removeItem="(data) => modals.showModal('RemoveProduct', data)"
       />
     </div>
   </div>

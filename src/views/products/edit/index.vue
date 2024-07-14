@@ -49,6 +49,7 @@ const form = ref({
     kz: "",
     en: ""
   },
+  article: "",
   category_id: null,
   image_url: "",
   product_variants: [],
@@ -58,14 +59,11 @@ const form = ref({
 const v$ = useVuelidate({
   title: {
     ru: {required},
-    kz: {required},
-    en: {required}
   },
   description: {
     ru: {required},
-    kz: {required},
-    en: {required}
   },
+  article: {required},
   category_id: {required},
   image_url: {required}
 }, form);
@@ -141,6 +139,7 @@ const fetchData = async () => {
       form.value.product_variants.push(variant.id);
     });
     form.value.category_id = products.detailProductResult.category.id;
+    form.value.article = products.detailProductResult.article;
     await nextTick()
     // Get filters by category
     await filters.getFiltersListByCategory(form.value.category_id);
@@ -177,6 +176,7 @@ watch(() => form.value.category_id, async () => {
     elementCopy.filter_id = filter.id;
     newElementsForm.value.push(elementCopy);
   });
+  form.value.filter_data = []
 }, {deep: true});
 </script>
 
@@ -215,6 +215,25 @@ watch(() => form.value.category_id, async () => {
                 Заполните все поля для успешного редактирования продукта.
               </p>
             </div>
+            <div
+                :class="{ '!border !border-red-500': v$.article.$error }"
+                class="mb-3 rounded-md px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
+              <label
+                  for="name"
+                  class="block text-xs font-medium text-gray-900">
+                Артикль
+              </label>
+              <div class="flex gap-2">
+                <input
+                    v-model="form.article"
+                    type="number"
+                    name="name"
+                    id="name"
+                    class="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                    placeholder="1XE3241F"
+                />
+              </div>
+            </div>
             <div class="rounded-md px-3 pb-1.5 pt-2.5 border mb-3">
               <div class="flex gap-3 mb-3 text-sm">
                 <p
@@ -229,8 +248,7 @@ watch(() => form.value.category_id, async () => {
                 <p
                     @click="currentLanguage = 'kz'"
                     :class="[
-                      { 'bg-mainColor text-white': currentLanguage === 'kz' },
-                      { '!border !border-red-500': v$.title.kz.$error || v$.description.kz.$error }
+                      { 'bg-mainColor text-white': currentLanguage === 'kz' }
                   ]"
                     class="bg-gray-200 px-4 py-2 rounded-md cursor-pointer">
                   Казахский
@@ -238,8 +256,7 @@ watch(() => form.value.category_id, async () => {
                 <p
                     @click="currentLanguage = 'en'"
                     :class="[
-                      { 'bg-mainColor text-white': currentLanguage === 'en' },
-                      { '!border !border-red-500': v$.title.en.$error || v$.description.en.$error }
+                      { 'bg-mainColor text-white': currentLanguage === 'en' }
                   ]"
                     class="bg-gray-200 px-4 py-2 rounded-md cursor-pointer">
                   Английский
@@ -279,9 +296,7 @@ watch(() => form.value.category_id, async () => {
                 </div>
               </div>
               <div v-else-if="currentLanguage === 'kz'">
-                <div
-                    :class="{ '!border !border-red-500': v$.title.kz.$error }"
-                    class="mb-3 rounded-md px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
+                <div class="mb-3 rounded-md px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
                   <label
                       for="name"
                       class="block text-xs font-medium text-gray-900">
@@ -296,9 +311,7 @@ watch(() => form.value.category_id, async () => {
                       placeholder="Күңгірт әмбебап бояу"
                   />
                 </div>
-                <div
-                    :class="{ '!border-red-500': v$.description.kz.$error }"
-                    class="mb-3 text-xs p-3 border rounded-md">
+                <div class="mb-3 text-xs p-3 border rounded-md">
                   <label
                       for="name"
                       class="block font-medium text-gray-900 mb-2">
@@ -312,9 +325,7 @@ watch(() => form.value.category_id, async () => {
                 </div>
               </div>
               <div v-else>
-                <div
-                    :class="{ '!border !border-red-500': v$.title.en.$error }"
-                    class="mb-3 rounded-md px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
+                <div class="mb-3 rounded-md px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
                   <label
                       for="name"
                       class="block text-xs font-medium text-gray-900">
@@ -329,9 +340,7 @@ watch(() => form.value.category_id, async () => {
                       placeholder="Universal paint matte"
                   />
                 </div>
-                <div
-                    :class="{ '!border-red-500': v$.description.en.$error }"
-                    class="mb-3 text-xs p-3 border rounded-md">
+                <div class="mb-3 text-xs p-3 border rounded-md">
                   <label
                       for="name"
                       class="block font-medium text-gray-900 mb-2">
@@ -527,7 +536,7 @@ watch(() => form.value.category_id, async () => {
                     {{ getFilterTitleById(filter.filter_id).ru }}:
                   </p>
                   <p>
-                    {{ filter.value.ru }}
+                    {{ filter.value.ru }}, {{ filter.value.kz }}, {{ filter.value.en }}
                   </p>
                   <XMarkIcon
                       @click="form.filter_data.splice(ind, 1)"

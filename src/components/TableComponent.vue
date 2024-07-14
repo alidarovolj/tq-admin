@@ -1,12 +1,26 @@
 <script setup>
-import {CheckIcon, KeyIcon, PencilSquareIcon, TrashIcon, UserPlusIcon} from "@heroicons/vue/24/outline"
+import {
+  CheckIcon,
+  KeyIcon,
+  MagnifyingGlassIcon,
+  PencilSquareIcon,
+  TrashIcon,
+  UserMinusIcon,
+  UserPlusIcon,
+  UsersIcon,
+  XMarkIcon
+} from "@heroicons/vue/24/outline"
 import PaginationBlock from "@/components/PaginationBlock.vue";
-import {useRoute} from "vue-router";
+import {useRoute, useRouter} from "vue-router";
+import {nextTick, onMounted, ref, watch} from "vue";
 
-const props = defineProps(['tableData', 'fetchedData', 'edit', 'makeAdmin', 'changePassword', 'removeItem', 'setActive']);
+const searchValue = ref('')
+
+const props = defineProps(['tableData', 'fetchedData', 'edit', 'makeAdmin', 'changePassword', 'removeItem', 'setActive', 'search']);
 const emit = defineEmits(['call_to_refresh', 'editValue', 'setAdmin', 'changePassword', 'removeItem', 'setActive']);
 
 const route = useRoute();
+const router = useRouter();
 
 const updateData = (data) => {
   emit('call_to_refresh', {page: route.query.page || 1, perPage: route.query.perPage || 10});
@@ -15,12 +29,67 @@ const updateData = (data) => {
 const getNestedProperty = (obj, path) => {
   return path.split('.').reduce((acc, part) => acc && acc[part], obj);
 };
+
+const handleSearch = () => {
+  router.push({
+    query: {
+      ...route.query,
+      searchKeyword: searchValue.value,
+    }
+  });
+};
+
+onMounted(async () => {
+  await nextTick()
+  if(route.query.searchKeyword) {
+    searchValue.value = route.query.searchKeyword
+  }
+});
+
+watch(() => route.query.searchKeyword, () => {
+  updateData();
+});
 </script>
 
 <template>
   <div class="mt-8">
     <div v-if="fetchedData" class="flow-root">
       <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+        <div
+            v-if="search"
+            class="sm:px-6 lg:px-8 mb-5 w-1/3">
+          <div>
+            <label
+                for="email"
+                class="block text-sm font-medium leading-6 text-gray-900">
+              Поиск по имени/названию
+            </label>
+            <div class="mt-2 flex rounded-md shadow-sm">
+              <div class="relative flex flex-grow items-stretch focus-within:z-10">
+                <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                  <UsersIcon
+                      class="h-5 w-5 text-gray-400"
+                      aria-hidden="true"
+                  />
+                </div>
+                <input
+                    v-model="searchValue"
+                    type="text"
+                    name="search"
+                    id="search"
+                    class="block w-full rounded-none rounded-l-md border-0 py-1.5 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    placeholder="Поиск..."
+                />
+              </div>
+              <button type="button"
+                      @click="handleSearch"
+                      class="relative -ml-px inline-flex items-center gap-x-1.5 rounded-r-md px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+                <MagnifyingGlassIcon class="-ml-0.5 h-5 w-5 text-gray-400" aria-hidden="true"/>
+                Найти
+              </button>
+            </div>
+          </div>
+        </div>
         <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
           <table class="min-w-full divide-y divide-gray-300">
             <thead class="bg-gray-50">
@@ -53,7 +122,10 @@ const getNestedProperty = (obj, path) => {
                   class="whitespace-nowrap pl-4 py-5 text-sm text-gray-500"
               >
                 <p v-if="it.type === 'string'" v-html="getNestedProperty(item, it.fn)"></p>
-                <div v-else-if="it.type === 'boolean'">
+                <div
+                    v-else-if="it.type === 'boolean'"
+                    class="text-xs"
+                >
                   <p
                       v-if="getNestedProperty(item, it.fn)"
                       class="bg-green-100 text-green-500 w-max px-4 py-2 rounded-xl">
@@ -68,13 +140,13 @@ const getNestedProperty = (obj, path) => {
                 <div v-else>
                   <img
                       v-if="!getNestedProperty(item, it.fn)"
-                      class="w-10 h-10 min-h-10 min-w-10"
+                      class="w-10 h-10 min-h-10 min-w-10 object-contain"
                       src="@/assets/img/logos/logo.svg"
                       alt=""
                   />
                   <img
                       v-else
-                      class="w-10 h-10 min-h-10 min-w-10"
+                      class="w-10 h-10 min-h-10 min-w-10 object-contain"
                       :src="getNestedProperty(item, it.fn)"
                       alt=""
                   />
@@ -93,13 +165,15 @@ const getNestedProperty = (obj, path) => {
                     v-if="setActive"
                     @click="emit('setActive', item)"
                     class="text-mainColor cursor-pointer w-max">
-                  <CheckIcon class="w-5 h-5"/>
+                  <CheckIcon v-if="!item[setActive]" class="w-5 h-5"/>
+                  <XMarkIcon v-else class="w-5 h-5"/>
                 </p>
                 <p
                     v-if="makeAdmin"
                     @click="emit('setAdmin', item)"
                     class="text-mainColor cursor-pointer w-max">
-                  <UserPlusIcon class="w-5 h-5"/>
+                  <UserPlusIcon v-if="!item[makeAdmin]" class="w-5 h-5"/>
+                  <UserMinusIcon v-else class="w-5 h-5"/>
                 </p>
                 <p
                     v-if="changePassword"

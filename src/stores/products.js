@@ -11,6 +11,8 @@ export const useProductsStore = defineStore('products', () => {
     const createdProduct = ref(null);
     const editedProduct = ref(null);
     const detailProductResult = ref(null);
+    const activeResult = ref(null);
+    const removedProduct = ref(null);
     const notifications = useNotificationStore()
 
     return {
@@ -18,22 +20,23 @@ export const useProductsStore = defineStore('products', () => {
         createdProduct,
         editedProduct,
         detailProductResult,
-        async getProductsList(page, perPage) {
+        activeResult,
+        removedProduct,
+        async getProductsList() {
             try {
-                let response = null
-                if(page && perPage) {
-                    response = await api(`/api/admin/products?page=${page}&perPage=${perPage}`, "GET");
-                } else {
-                    response = await api(`/api/admin/products/`, "GET");
-                }
+                const response = await api(`/api/admin/products/`, "GET", {}, route.query);
                 const data = response.data;
-
-                productsList.value = data
+                productsList.value = data;
             } catch (e) {
-                if (e.response.status !== 500) {
-                    notifications.showNotification("error", "Произошла ошибка", e.response.data.message);
+                if (e.response) {
+                    if (e.response.status !== 500) {
+                        notifications.showNotification("error", "Произошла ошибка", e.response.data.message);
+                    } else {
+                        notifications.showNotification("error", "Ошибка сервера!", "Попробуйте позже.");
+                    }
                 } else {
-                    notifications.showNotification("error", "Ошибка сервера!", "Попробуйте позже.");
+                    console.error(e);
+                    notifications.showNotification("error", "Произошла ошибка", "Неизвестная ошибка");
                 }
             }
         },
@@ -101,6 +104,50 @@ export const useProductsStore = defineStore('products', () => {
                     console.error(e);
                     notifications.showNotification("error", "Произошла ошибка", "Неизвестная ошибка");
                     editedProduct.value = false;
+                }
+            }
+        },
+        async setActive(id, form) {
+            try {
+                const response = await api(`api/admin/products/${id}`, "PATCH", {
+                    body: JSON.stringify(form)
+                }, route.query);
+                const data = response.data;
+                activeResult.value = data;
+            } catch (e) {
+                if (e.response) {
+                    if (e.response.status !== 500) {
+                        notifications.showNotification("error", "Произошла ошибка", e.response.data.message);
+                        activeResult.value = false;
+                    } else {
+                        notifications.showNotification("error", "Ошибка сервера!", "Попробуйте позже.");
+                        activeResult.value = false;
+                    }
+                } else {
+                    console.error(e);
+                    notifications.showNotification("error", "Произошла ошибка", "Неизвестная ошибка");
+                    activeResult.value = false;
+                }
+            }
+        },
+        async removeProduct(id) {
+            try {
+                const response = await api(`api/admin/products/${id}`, "DELETE", {}, route.query);
+                const data = response.data;
+                removedProduct.value = data;
+            } catch (e) {
+                if (e.response) {
+                    if (e.response.status !== 500) {
+                        notifications.showNotification("error", "Произошла ошибка", e.response.data.message);
+                        removedProduct.value = false;
+                    } else {
+                        notifications.showNotification("error", "Ошибка сервера!", "Попробуйте позже.");
+                        removedProduct.value = false;
+                    }
+                } else {
+                    console.error(e);
+                    notifications.showNotification("error", "Произошла ошибка", "Неизвестная ошибка");
+                    removedProduct.value = false;
                 }
             }
         },

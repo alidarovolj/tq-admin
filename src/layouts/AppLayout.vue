@@ -42,11 +42,6 @@ const sidebarOpen = ref(false)
 
 const users = useUsersStore()
 const {userProfile} = storeToRefs(users)
-
-onMounted(async () => {
-  await nextTick()
-  await users.getProfile()
-})
 </script>
 
 <template>

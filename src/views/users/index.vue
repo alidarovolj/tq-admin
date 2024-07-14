@@ -18,7 +18,8 @@ const tableData = ref([
   {name: "ID", fn: "id", type: "string"},
   {name: "Имя", fn: "name", type: "string"},
   {name: "Email", fn: "email", type: "string"},
-  {name: "Номер телефона", fn: "phone_number", type: "string"}
+  {name: "Номер телефона", fn: "phone_number", type: "string"},
+  {name: "Администратор", fn: "is_admin", type: "boolean"}
 ]);
 
 const page = ref(route.query.page || 1);
@@ -91,7 +92,8 @@ watch(route.query, async () => {
       </div>
       <TableComponent
           :edit="true"
-          :makeAdmin="true"
+          :search="true"
+          :makeAdmin="'is_admin'"
           :changePassword="true"
           :tableData="tableData"
           :fetchedData="userList"

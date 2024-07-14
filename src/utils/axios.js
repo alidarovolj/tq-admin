@@ -3,10 +3,12 @@ import { stringify } from "qs";
 import { defu } from "defu";
 import axios from "axios";
 import { useRouter } from "vue-router";
+import {useNotificationStore} from "@/stores/notifications.js";
 
 export async function api(url, method, options = {}, query = {}) {
     const token = ref(localStorage.getItem('token'));
     const router = useRouter()
+    const notifications = useNotificationStore();
 
     const defaultPage = query.page || 1;
     const defaultPerPage = query.perPage || 10;
@@ -51,7 +53,7 @@ export async function api(url, method, options = {}, query = {}) {
         return response;
     } catch (error) {
         if (error.response && error.response.status === 401) {
-            console.log("Unauthorized access - removing token and redirecting");
+            notifications.showNotification("error", "Токен не получен или истек", "Пожалуйста, авторизуйтесь снова");
             localStorage.removeItem("token");
             router.push('/login');
         } else {

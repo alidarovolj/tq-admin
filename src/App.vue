@@ -7,7 +7,7 @@ import ModalDialog from "@/components/ModalDialog.vue";
 
 const route = useRoute();
 
-const showLayout = computed(() => route.path !== '/login');
+const showLayout = computed(() => route.fullPath !== '/login');
 </script>
 
 <template>
