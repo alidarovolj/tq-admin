@@ -34,9 +34,7 @@ const form = ref({
 
 const v$ = useVuelidate({
   title: {
-    ru: {required},
-    kz: {required},
-    en: {required}
+    ru: {required}
   },
   image_url: {required}
 }, form);
@@ -117,8 +115,7 @@ watch([page, perPage], fetchData);
                 <p
                     @click="currentLanguage = 'kz'"
                     :class="[
-                      { 'bg-mainColor text-white': currentLanguage === 'kz' },
-                      { '!border !border-red-500': v$.title.kz.$error }
+                      { 'bg-mainColor text-white': currentLanguage === 'kz' }
                   ]"
                     class="bg-gray-200 px-4 py-2 rounded-md cursor-pointer">
                   Казахский
@@ -126,8 +123,7 @@ watch([page, perPage], fetchData);
                 <p
                     @click="currentLanguage = 'en'"
                     :class="[
-                      { 'bg-mainColor text-white': currentLanguage === 'en' },
-                      { '!border !border-red-500': v$.title.en.$error }
+                      { 'bg-mainColor text-white': currentLanguage === 'en' }
                   ]"
                     class="bg-gray-200 px-4 py-2 rounded-md cursor-pointer">
                   Английский
@@ -154,7 +150,6 @@ watch([page, perPage], fetchData);
               </div>
               <div v-else-if="currentLanguage === 'kz'">
                 <div
-                    :class="{ '!border !border-red-500': v$.title.kz.$error }"
                     class="rounded-md px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
                   <label
                       for="name"
@@ -173,7 +168,6 @@ watch([page, perPage], fetchData);
               </div>
               <div v-else>
                 <div
-                    :class="{ '!border !border-red-500': v$.title.en.$error }"
                     class="rounded-md px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
                   <label
                       for="name"
@@ -221,8 +215,6 @@ watch([page, perPage], fetchData);
                     </div>
                     <div class="ml-3 leading-6">
                       <label :for="item.id" class="font-medium text-gray-900">{{ item.title.ru }}</label>
-                      {{ ' ' }}
-                      <span id="comments-description" class="text-gray-500">{{ item.measure.ru }}</span>
                     </div>
                   </div>
                 </div>

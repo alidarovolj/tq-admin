@@ -198,8 +198,6 @@ onMounted(async () => {
             </div>
             <div class="ml-3 leading-6">
               <label :for="item.id" class="font-medium text-gray-900">{{ item.title.ru }}</label>
-              {{ ' ' }}
-              <span id="comments-description" class="text-gray-500">{{ item.measure.ru }}</span>
             </div>
           </div>
         </div>

@@ -2,12 +2,14 @@
 import {ref} from 'vue';
 import axios from 'axios';
 import {PhotoIcon} from "@heroicons/vue/24/outline"
+import {useNotificationStore} from "@/stores/notifications.js";
 
 const fileInput = ref(null);
 const isLoading = ref(false);
 const emit = defineEmits(['photoUploaded']);
 const props = defineProps(['type', 'preview_image']);
 const previewImage = ref(null);
+const notifications = useNotificationStore()
 
 const uploadPhoto = async () => {
   const file = fileInput.value.files[0];
@@ -28,7 +30,7 @@ const uploadPhoto = async () => {
     previewImage.value = response.data.image_url
     emit('photoUploaded', response.data.image_url);
   } catch (error) {
-    console.error('Error uploading photo:', error);
+    notifications.showNotification("error", "Произошла ошибка", "Файл слишком велик или не является изображением");
   } finally {
     isLoading.value = false;
   }

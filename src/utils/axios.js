@@ -3,11 +3,11 @@ import { stringify } from "qs";
 import { defu } from "defu";
 import axios from "axios";
 import { useRouter } from "vue-router";
-import {useNotificationStore} from "@/stores/notifications.js";
+import { useNotificationStore } from "@/stores/notifications.js";
 
 export async function api(url, method, options = {}, query = {}) {
     const token = ref(localStorage.getItem('token'));
-    const router = useRouter()
+    const router = useRouter();
     const notifications = useNotificationStore();
 
     const defaultPage = query.page || 1;
@@ -23,36 +23,30 @@ export async function api(url, method, options = {}, query = {}) {
     const headers = {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token.value}`,
-        paramsSerializer: {
-            serialize: (params) =>
-                stringify(params, {
-                    encode: false,
-                    allowDots: true,
-                    skipNulls: true
-                })
-        }
     };
 
-    const defaults = {
+    const config = defu(options, {
         baseURL: import.meta.env.VITE_APP_BASE_URL,
         headers: headers,
-        watch: false,
         method: method,
         url: url,
-        params, // добавляем параметры в запрос
-    };
+        params,
+        paramsSerializer: params => stringify(params, {
+            encode: false,
+            allowDots: true,
+            skipNulls: true
+        })
+    });
 
     if (options.body) {
-        defaults.data = JSON.parse(options.body);
+        config.data = JSON.parse(options.body);
     }
 
-    const config = defu(options, headers);
-
     try {
-        const response = await axios(defaults, config);
+        const response = await axios(config);
         return response;
     } catch (error) {
-        if (error.response && error.response.status === 401) {
+        if (error.response && error.response.status === 401 || error.response.status === 403) {
             notifications.showNotification("error", "Токен не получен или истек", "Пожалуйста, авторизуйтесь снова");
             localStorage.removeItem("token");
             router.push('/login');

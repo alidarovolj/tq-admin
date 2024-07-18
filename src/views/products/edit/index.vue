@@ -7,11 +7,12 @@ import {useProductsStore} from "@/stores/products.js";
 import {storeToRefs} from "pinia";
 import {QuillEditor} from '@vueup/vue-quill'
 import '@vueup/vue-quill/dist/vue-quill.snow.css';
-import {ArrowLongLeftIcon, PlusIcon, XMarkIcon} from "@heroicons/vue/24/outline/index.js";
+import {ArrowLongLeftIcon, CheckIcon, ChevronUpDownIcon, XMarkIcon} from "@heroicons/vue/24/outline/index.js";
 import {useCategoriesStore} from "@/stores/categories.js";
 import {useFiltersStore} from "@/stores/filters.js";
 import UploadImage from "@/components/UploadImage.vue";
 import {useNotificationStore} from "@/stores/notifications.js";
+import {Combobox, ComboboxButton, ComboboxInput, ComboboxLabel, ComboboxOption, ComboboxOptions} from "@headlessui/vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -23,13 +24,13 @@ const newElementForm = ref({
     ru: "",
     kz: "",
     en: ""
-  }
+  },
+  values: []
 })
 
 const newVariant = ref(null)
 
 const currentLanguage = ref('ru')
-const currentLanguageFilters = ref('ru')
 
 const products = useProductsStore()
 const categories = useCategoriesStore()
@@ -65,7 +66,8 @@ const v$ = useVuelidate({
   },
   article: {required},
   category_id: {required},
-  image_url: {required}
+  image_url: {required},
+  filter_data: {required, minLength: (1)}
 }, form);
 
 const options = ref({
@@ -152,6 +154,7 @@ const fetchData = async () => {
     products.detailProductResult.filter_data.forEach(filter => {
       let elem = {}
       elem.filter_id = filter.id;
+      elem.value_id = filter.value_id;
       elem.value = filter.value;
       form.value.filter_data.push(elem);
     });
@@ -178,6 +181,30 @@ watch(() => form.value.category_id, async () => {
   });
   form.value.filter_data = []
 }, {deep: true});
+
+const setQuery = async (event, index) => {
+  newElementsForm.value[index].query = event.target.value;
+  await filters.getFilterValues(newElementsForm.value[index].filter_id, event.target.value)
+  newElementsForm.value[index].values = filters.filterValues.data
+};
+
+const selectFilter = (index, value) => {
+  // Ensure that the filter_id and value_id are updated correctly
+  const newElement = {
+    filter_id: newElementsForm.value[index].filter_id,
+    value_id: value.id,
+    value: newElementsForm.value[index].value.values
+  };
+
+  // Add the new element to form.filter_data if it does not already exist
+  const exists = form.value.filter_data.some(
+      (item) => item.filter_id === newElement.filter_id && item.value_id === newElement.value_id
+  );
+
+  if (!exists) {
+    form.value.filter_data.push(newElement);
+  }
+};
 </script>
 
 <template>
@@ -296,7 +323,8 @@ watch(() => form.value.category_id, async () => {
                 </div>
               </div>
               <div v-else-if="currentLanguage === 'kz'">
-                <div class="mb-3 rounded-md px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
+                <div
+                    class="mb-3 rounded-md px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
                   <label
                       for="name"
                       class="block text-xs font-medium text-gray-900">
@@ -325,7 +353,8 @@ watch(() => form.value.category_id, async () => {
                 </div>
               </div>
               <div v-else>
-                <div class="mb-3 rounded-md px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
+                <div
+                    class="mb-3 rounded-md px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
                   <label
                       for="name"
                       class="block text-xs font-medium text-gray-900">
@@ -358,14 +387,9 @@ watch(() => form.value.category_id, async () => {
               <UploadImage
                   :class="{ '!border !border-red-500': v$.image_url.$error }"
                   type="products"
+                  :preview_image="form.image_url"
                   @photoUploaded="(image) => form.image_url = image"
               />
-              <img
-                  v-if="form.image_url"
-                  class="h-20 w-max object-contain"
-                  :class="{ 'mt-5' : form.image_url }"
-                  :src="form.image_url"
-                  alt="">
             </div>
             <div
                 class="mb-3 rounded-md px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
@@ -417,7 +441,7 @@ watch(() => form.value.category_id, async () => {
               </p>
               <select
                   v-model="form.category_id"
-                  class="w-full px-4 py-3 rounded-md"
+                  class="w-full p-2 rounded-md text-xs border"
                   name=""
                   id="">
                 <option :value="null">Выберите категорию</option>
@@ -434,114 +458,100 @@ watch(() => form.value.category_id, async () => {
               <div
                   v-if="filtersListByCategory.length > 0 && newElementsForm.length > 0"
                   class="text-xs mb-3">
-                <p class="mb-3 block text-xs font-medium text-gray-900">
+                <p class="block text-xs font-medium text-gray-900 mb-2">
                   Выберите фильтры для продукта
                 </p>
-                <div class="flex gap-3 mb-3 text-sm">
-                  <p
-                      @click="currentLanguageFilters = 'ru'"
-                      :class="[
-                      { 'bg-mainColor text-white': currentLanguageFilters === 'ru' }
-                  ]"
-                      class="bg-gray-200 px-4 py-2 rounded-md cursor-pointer">
-                    Русский
-                  </p>
-                  <p
-                      @click="currentLanguageFilters = 'kz'"
-                      :class="[
-                      { 'bg-mainColor text-white': currentLanguageFilters === 'kz' }
-                  ]"
-                      class="bg-gray-200 px-4 py-2 rounded-md cursor-pointer">
-                    Казахский
-                  </p>
-                  <p
-                      @click="currentLanguageFilters = 'en'"
-                      :class="[
-                      { 'bg-mainColor text-white': currentLanguageFilters === 'en' }
-                  ]"
-                      class="bg-gray-200 px-4 py-2 rounded-md cursor-pointer">
-                    Английский
-                  </p>
-                </div>
-                <div
-                    v-for="(item, index) of filtersListByCategory"
-                    :key="index"
-                    class="flex items-center w-1/2"
-                >
-                  <div>
-                    <div class="mt-2 flex items-center gap-2 w-full">
-                      <div
-                          v-if="currentLanguageFilters === 'ru'"
-                          class="w-full rounded-md px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
-                        <label for="name" class="block text-xs font-medium text-gray-900">
+                <div class="lg:grid lg:grid-cols-3 lg:gap-x-8 xl:grid-cols-4">
+                  <div
+                      v-for="(item, index) of filtersListByCategory"
+                      :key="index"
+                      class="flex items-center w-full"
+                  >
+                    <div class="w-full">
+                      <div class="flex justify-between">
+                        <p>
                           {{ item.title.ru }}
-                        </label>
-                        <input
-                            v-model="newElementsForm[index].value.ru"
-                            type="text"
-                            class="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                            placeholder="Цвет краски, мм, кг и т.д."
-                        />
+                        </p>
                       </div>
-                      <div
-                          v-else-if="currentLanguageFilters === 'kz'"
-                          class="w-full rounded-md px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
-                        <label for="name" class="block text-xs font-medium text-gray-900">
-                          {{ item.title.kz }}
-                        </label>
-                        <input
-                            v-model="newElementsForm[index].value.kz"
-                            type="text"
-                            class="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                            placeholder="Бояу түсі, мм, кг және т.б."
-                        />
+                      <div class="flex items-center gap-2 w-full">
+                        <Combobox
+                            as="div"
+                            class="w-full"
+                            v-model="newElementsForm[index].value"
+                            @update:modelValue="(value) => selectFilter(index, value)"
+                        >
+                          <ComboboxLabel class="block text-xs font-medium leading-3 text-gray-900">
+                            {{ newElementsForm[index].values.ru }}
+                          </ComboboxLabel>
+                          <div class="relative mt-2">
+                            <ComboboxInput
+                                :class="{ '!border !border-red-500': v$.filter_data.$error }"
+                                class="w-full rounded-md border-0 bg-white py-1.5 pl-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                @change="setQuery($event, index)"
+                                @blur="newElementsForm[index].query = ''"
+                                :display-value="(value) => value?.values?.ru"
+                            />
+                            <ComboboxButton
+                                class="absolute inset-y-0 right-0 flex items-center rounded-r-md px-2 focus:outline-none"
+                            >
+                              <ChevronUpDownIcon class="h-5 w-5 text-gray-400" aria-hidden="true"/>
+                            </ComboboxButton>
+
+                            <ComboboxOptions
+                                v-if="newElementsForm[index].values.length > 0"
+                                class="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
+                            >
+                              <ComboboxOption
+                                  v-for="(filter, ind) in newElementsForm[index].values"
+                                  :key="ind"
+                                  :value="filter"
+                                  as="template"
+                                  v-slot="{ active, selected }"
+                              >
+                                <li
+                                    :class="['relative cursor-default select-none py-2 pl-3 pr-9', active ? 'bg-indigo-600 text-white' : 'text-gray-900']"
+                                >
+                  <span :class="['block truncate', selected && 'font-semibold']">
+                    {{ filter.values.ru }}
+                  </span>
+                                  <span
+                                      v-if="selected"
+                                      :class="['absolute inset-y-0 right-0 flex items-center pr-4', active ? 'text-white' : 'text-indigo-600']"
+                                  >
+                    <CheckIcon class="h-5 w-5" aria-hidden="true"/>
+                  </span>
+                                </li>
+                              </ComboboxOption>
+                            </ComboboxOptions>
+                          </div>
+                        </Combobox>
                       </div>
-                      <div
-                          v-else
-                          class="w-full rounded-md px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
-                        <label for="name" class="block text-xs font-medium text-gray-900">
-                          {{ item.title.en }}
-                        </label>
-                        <input
-                            v-model="newElementsForm[index].value.en"
-                            type="text"
-                            class="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                            placeholder="Paint color, mm, kg, etc."
-                        />
-                      </div>
-                      <p
-                          v-if="newElementsForm[index].value.ru.length > 0 && newElementsForm[index].value.kz.length > 0 && newElementsForm[index].value.en.length > 0"
-                          @click="newElement(index)"
-                          class="rounded-full cursor-pointer bg-mainColor p-1.5 text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                        <PlusIcon
-                            class="h-5 w-5"
-                            aria-hidden="true"
-                        />
-                      </p>
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
-            <div v-if="form.filter_data.length > 0" class="mt-3 text-xs">
-              <p class="block font-medium text-gray-900">
-                Выбранные фильтры
-              </p>
-              <div class="flex flex-wrap gap-2">
-                <div
-                    v-for="(filter, ind) of form.filter_data"
-                    :key="ind"
-                    class="flex items-center bg-gray-100 p-2 gap-1 rounded-md">
-                  <p>
-                    {{ getFilterTitleById(filter.filter_id).ru }}:
+
+
+                <div v-if="form.filter_data.length > 0" class="mt-3">
+                  <p class="block text-xs font-medium text-gray-900">
+                    Выбранные фильтры
                   </p>
-                  <p>
-                    {{ filter.value.ru }}, {{ filter.value.kz }}, {{ filter.value.en }}
-                  </p>
-                  <XMarkIcon
-                      @click="form.filter_data.splice(ind, 1)"
-                      class="w-5 h-5 text-red-500 cursor-pointer"
-                  />
+                  <div class="flex flex-wrap gap-2">
+                    <div
+                        v-for="(filter, ind) of form.filter_data"
+                        :key="ind"
+                        class="flex items-center bg-gray-100 p-2 gap-1 rounded-md">
+                      <p>
+                        {{ getFilterTitleById(filter.filter_id).ru }}:
+                      </p>
+                      <p>
+                        {{ filter.value.ru }}<span v-if="filter.value.kz">, {{ filter.value.kz }}</span><span v-if="filter.value.en">, {{ filter.value.en }}</span>
+                      </p>
+                      <XMarkIcon
+                          @click="form.filter_data.splice(ind, 1)"
+                          class="w-5 h-5 text-red-500 cursor-pointer"
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

@@ -10,6 +10,7 @@ import productsEdit from "@/views/products/edit/index.vue";
 import brandsView from "@/views/brands/index.vue";
 import ideasView from "@/views/ideas/index.vue";
 import ideasCreate from "@/views/ideas/create/index.vue";
+import filtersView from "@/views/filters/index.vue";
 
 const routes = [
     {
@@ -57,6 +58,12 @@ const routes = [
         path: '/products',
         name: "Products",
         component: productsView,
+        meta: {requiresAuth: true}
+    },
+    {
+        path: '/filters',
+        name: "Filters",
+        component: filtersView,
         meta: {requiresAuth: true}
     },
     {

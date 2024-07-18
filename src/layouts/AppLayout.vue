@@ -16,6 +16,7 @@ import {
 } from '@heroicons/vue/24/outline'
 import {RouterLink, useRoute} from "vue-router";
 import {storeToRefs} from "pinia";
+import Footer from "@/components/Footer.vue";
 
 const route = useRoute()
 
@@ -30,12 +31,10 @@ const navigation = [
   {name: 'Категории', href: '/categories', icon: TagIcon, alias: 'Categories', children: []},
   {name: 'Идеи', href: '/ideas', icon: LightBulbIcon, alias: 'Ideas', children: []},
   {name: 'Бренды', href: '/brands', icon: DocumentDuplicateIcon, alias: 'Brands', children: []},
-  {name: 'Статистика', href: '#', icon: ChartPieIcon, alias: 'Statistics', children: []},
+  // {name: 'Статистика', href: '#', icon: ChartPieIcon, alias: 'Statistics', children: []},
 ]
 const teams = [
-  {id: 1, name: 'Heroicons', href: '#', initial: 'H', alias: '...'},
-  {id: 2, name: 'Tailwind Labs', href: '#', initial: 'T', alias: '...'},
-  {id: 3, name: 'Workcation', href: '#', initial: 'W', alias: '...'},
+  {id: 1, name: 'Фильтры', href: '/filters', initial: 'F', alias: 'Filters'}
 ]
 
 const sidebarOpen = ref(false)
@@ -147,7 +146,7 @@ const {userProfile} = storeToRefs(users)
                     </li>
                     <li>
                       <div class="text-xs font-semibold leading-6 text-gray-400">
-                        Your teams
+                        Доп. данные
                       </div>
                       <ul
                           role="list"
@@ -229,7 +228,7 @@ const {userProfile} = storeToRefs(users)
             </li>
             <li>
               <div class="text-xs font-semibold leading-6 text-gray-400">
-                Your teams
+                Доп. данные
               </div>
               <ul
                   role="list"
@@ -307,6 +306,7 @@ const {userProfile} = storeToRefs(users)
           <slot/>
         </div>
       </div>
+      <Footer />
     </main>
   </div>
 </template>
