@@ -6,7 +6,7 @@ import {
   LightBulbIcon,
   Bars3Icon,
   TagIcon,
-  ChartPieIcon,
+  CircleStackIcon,
   DocumentDuplicateIcon,
   FolderIcon,
   HomeIcon,
@@ -25,7 +25,8 @@ const navigation = [
   {name: 'Пользователи', href: '/users', icon: UsersIcon, alias: 'Users', children: []},
   {
     name: 'Продукты', href: '/products', icon: FolderIcon, alias: 'Products', children: [
-      {name: 'Создание', href: '/products/create', icon: PlusCircleIcon, alias: 'ProductsCreate', children: []}
+      {name: 'Создание', href: '/products/create', icon: PlusCircleIcon, alias: 'ProductsCreate', children: []},
+      {name: 'Вариации', href: '/products/variants', icon: CircleStackIcon, alias: 'ProductsVariants', children: []}
     ]
   },
   {name: 'Категории', href: '/categories', icon: TagIcon, alias: 'Categories', children: []},

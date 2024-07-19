@@ -1,9 +1,11 @@
 <script setup>
 import {
   CheckIcon,
+  CircleStackIcon,
   KeyIcon,
   MagnifyingGlassIcon,
   PencilSquareIcon,
+  RectangleStackIcon,
   TrashIcon,
   UserMinusIcon,
   UserPlusIcon,
@@ -16,8 +18,8 @@ import {nextTick, onMounted, ref, watch} from "vue";
 
 const searchValue = ref('')
 
-const props = defineProps(['tableData', 'fetchedData', 'edit', 'makeAdmin', 'changePassword', 'removeItem', 'setActive', 'search']);
-const emit = defineEmits(['call_to_refresh', 'editValue', 'setAdmin', 'changePassword', 'removeItem', 'setActive']);
+const props = defineProps(['tableData', 'fetchedData', 'edit', 'makeAdmin', 'changePassword', 'removeItem', 'setActive', 'search', 'changePrice', 'changeRemains']);
+const emit = defineEmits(['call_to_refresh', 'editValue', 'setAdmin', 'changePassword', 'removeItem', 'setActive', 'changePrice', 'changeRemains']);
 
 const route = useRoute();
 const router = useRouter();
@@ -41,7 +43,7 @@ const handleSearch = () => {
 
 onMounted(async () => {
   await nextTick()
-  if(route.query.searchKeyword) {
+  if (route.query.searchKeyword) {
     searchValue.value = route.query.searchKeyword
   }
 });
@@ -102,12 +104,12 @@ watch(() => route.query.searchKeyword, () => {
                 {{ item.name }}
               </th>
               <th
-                  v-if="edit"
+                  v-if="edit || makeAdmin || changePassword || removeItem || setActive || changePrice || changeRemains"
                   scope="col"
-                  class="relative py-3.5 pl-3 pr-4 sm:pr-0">
-                    <span class="sr-only">
-                      Edit
-                    </span>
+                  class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900">
+                <p>
+                  Действия
+                </p>
               </th>
             </tr>
             </thead>
@@ -121,7 +123,15 @@ watch(() => route.query.searchKeyword, () => {
                   :key="ind"
                   class="whitespace-nowrap pl-4 py-5 text-sm text-gray-500"
               >
-                <p v-if="it.type === 'string'" v-html="getNestedProperty(item, it.fn)"></p>
+                <p
+                    v-if="it.type === 'string' && getNestedProperty(item, it.fn)"
+                    v-html="getNestedProperty(item, it.fn)">
+                </p>
+                <p
+                    v-else-if="it.type === 'string' && !getNestedProperty(item, it.fn)"
+                    class="text-red-500">
+                  Нет данных
+                </p>
                 <div
                     v-else-if="it.type === 'boolean'"
                     class="text-xs"
@@ -153,7 +163,7 @@ watch(() => route.query.searchKeyword, () => {
                 </div>
               </td>
               <td
-                  v-if="edit || makeAdmin || changePassword || removeItem || setActive"
+                  v-if="edit || makeAdmin || changePassword || removeItem || setActive || changePrice || changeRemains"
                   class="pl-4 py-5 relative whitespace-nowrap pr-4 text-right text-sm font-medium sm:pr-6 lg:pr-8 flex gap-1">
                 <p
                     v-if="edit"
@@ -174,6 +184,18 @@ watch(() => route.query.searchKeyword, () => {
                     class="text-mainColor cursor-pointer w-max">
                   <UserPlusIcon v-if="!item[makeAdmin]" class="w-5 h-5"/>
                   <UserMinusIcon v-else class="w-5 h-5"/>
+                </p>
+                <p
+                    v-if="changePrice"
+                    @click="emit('changePrice', item)"
+                    class="text-mainColor cursor-pointer w-max">
+                  <CircleStackIcon class="w-5 h-5"/>
+                </p>
+                <p
+                    v-if="changeRemains"
+                    @click="emit('changeRemains', item)"
+                    class="text-mainColor cursor-pointer w-max">
+                  <RectangleStackIcon class="w-5 h-5"/>
                 </p>
                 <p
                     v-if="changePassword"

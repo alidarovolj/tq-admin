@@ -11,6 +11,7 @@ import brandsView from "@/views/brands/index.vue";
 import ideasView from "@/views/ideas/index.vue";
 import ideasCreate from "@/views/ideas/create/index.vue";
 import filtersView from "@/views/filters/index.vue";
+import productVariantsView from "@/views/products/variants/index.vue";
 
 const routes = [
     {
@@ -64,6 +65,12 @@ const routes = [
         path: '/filters',
         name: "Filters",
         component: filtersView,
+        meta: {requiresAuth: true}
+    },
+    {
+        path: '/products/variants',
+        name: "ProductsVariants",
+        component: productVariantsView,
         meta: {requiresAuth: true}
     },
     {
