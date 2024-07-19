@@ -64,14 +64,17 @@ watch(route.query, async () => {
             Список всех вариаций продуктов вашей компании, включая их названия, описания и категории.
           </p>
         </div>
-<!--        <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">-->
-<!--          <RouterLink-->
-<!--              to="/products/create"-->
-<!--              type="button"-->
-<!--              class="block rounded-md bg-mainColor px-3 py-2 text-center text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2">-->
-<!--            Добавить продукт-->
-<!--          </RouterLink>-->
-<!--        </div>-->
+        <div class="mt-4 sm:ml-16 sm:mt-0 flex gap-3">
+          <div class="flex items-center gap-1 rounded-md bg-mainColor px-3 py-2 text-center text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2">
+            <img class="w-7 h-7" src="@/assets/img/logos/excel.png" alt="">
+            <p>
+              Скачать
+            </p>
+          </div>
+          <div class="flex items-center rounded-md bg-mainColor px-3 py-2 text-center text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2">
+            Импортировать
+          </div>
+        </div>
       </div>
       <TableComponent
           :tableData="tableData"
