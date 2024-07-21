@@ -2,21 +2,23 @@
 import {ref, watch, onMounted} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import TableComponent from "@/components/TableComponent.vue";
-import {useProductsStore} from "@/stores/products.js";
 import {storeToRefs} from "pinia";
 import {useModalsStore} from "@/stores/modals.js";
+import {useIdeasStore} from "@/stores/ideas.js";
 
 const route = useRoute();
 const router = useRouter();
 const modals = useModalsStore()
 
-const products = useProductsStore()
-const {productsList} = storeToRefs(products)
+const ideas = useIdeasStore()
+const {ideasListWithPG} = storeToRefs(ideas)
 
 const tableData = ref([
   {name: "ID", fn: "id", type: "string"},
-  {name: "Название", fn: "title.ru", type: "string"},
-  {name: "Категория", fn: "category.title.ru", type: "string"}
+  {name: "Картинка", fn: "image_url", type: "image"},
+  {name: "Название", fn: "title", type: "string"},
+  {name: "Комната", fn: "room_title.ru", type: "string"},
+  {name: "Тип цвета", fn: "color_title.ru", type: "string"}
 ])
 
 const page = ref(route.query.page || 1);
@@ -34,7 +36,7 @@ watch([page, perPage], updateQueryParams, {deep: true});
 
 const fetchData = async () => {
   try {
-    await products.getProductsList()
+    await ideas.getIdeasListWithPG()
   } catch (error) {
     console.error(error);
   }
@@ -45,7 +47,7 @@ onMounted(fetchData);
 watch([page, perPage], fetchData);
 
 watch(route.query, async () => {
-  await products.getProductsList(route.query.page, route.query.perPage)
+  await ideas.getIdeasListWithPG(route.query.page, route.query.perPage)
 });
 </script>
 
@@ -72,10 +74,10 @@ watch(route.query, async () => {
       </div>
       <TableComponent
           :tableData="tableData"
-          :fetchedData="productsList"
-          :edit="true"
+          :fetchedData="ideasListWithPG"
+          :remove-item="true"
+          @removeItem="(data) => modals.showModal('RemoveIdea', data)"
           @call_to_refresh="fetchData"
-          @editValue="(data) => router.push(`/products/edit/${data.id}`)"
       />
     </div>
   </div>
