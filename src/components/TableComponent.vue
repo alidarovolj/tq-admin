@@ -15,6 +15,7 @@ import {
 import PaginationBlock from "@/components/PaginationBlock.vue";
 import {useRoute, useRouter} from "vue-router";
 import {nextTick, onMounted, ref, watch} from "vue";
+import {formatDate} from "@/utils/formatDate.js";
 
 const searchValue = ref('')
 
@@ -145,6 +146,14 @@ watch(() => route.query.searchKeyword, () => {
                       v-else
                       class="bg-red-100 text-red-500 w-max px-4 py-2 rounded-xl">
                     Деактивирован
+                  </p>
+                </div>
+                <div
+                    v-else-if="it.type === 'time'"
+                    class="text-xs"
+                >
+                  <p>
+                    {{ formatDate(getNestedProperty(item, it.fn)) }}
                   </p>
                 </div>
                 <div v-else>

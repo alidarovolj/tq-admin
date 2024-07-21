@@ -12,7 +12,8 @@ import {
   HomeIcon,
   UsersIcon,
   XMarkIcon,
-  PlusCircleIcon
+  PlusCircleIcon,
+    NewspaperIcon
 } from '@heroicons/vue/24/outline'
 import {RouterLink, useRoute} from "vue-router";
 import {storeToRefs} from "pinia";
@@ -32,6 +33,7 @@ const navigation = [
   {name: 'Категории', href: '/categories', icon: TagIcon, alias: 'Categories', children: []},
   {name: 'Идеи', href: '/ideas', icon: LightBulbIcon, alias: 'Ideas', children: []},
   {name: 'Бренды', href: '/brands', icon: DocumentDuplicateIcon, alias: 'Brands', children: []},
+  {name: 'Новости', href: '/news', icon: NewspaperIcon, alias: 'News', children: []},
   // {name: 'Статистика', href: '#', icon: ChartPieIcon, alias: 'Statistics', children: []},
 ]
 const teams = [

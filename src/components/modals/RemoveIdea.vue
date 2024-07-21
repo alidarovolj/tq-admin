@@ -3,21 +3,21 @@ import {ref} from "vue";
 import {XMarkIcon} from '@heroicons/vue/24/outline'
 import {useModalsStore} from "@/stores/modals.js";
 import {useNotificationStore} from "@/stores/notifications.js";
-import {useProductsStore} from "@/stores/products.js";
+import {useIdeasStore} from "@/stores/ideas.js";
 
 const loading = ref(false)
 
 const modals = useModalsStore()
-const products = useProductsStore()
+const ideas = useIdeasStore()
 const notifications = useNotificationStore();
 
-const removeProduct = async () => {
+const removeIdea = async () => {
   loading.value = true
 
-  await products.removeProduct(modals.modal.modalData.id)
-  if (products.removedProduct !== false) {
-    notifications.showNotification("success", "Продукт успешно удален", "Продукт успешно удален из системы.");
-    await products.getProductsList()
+  await ideas.removeIdea(modals.modal.modalData.id)
+  if (ideas.removedIdea !== false) {
+    notifications.showNotification("success", "Идея успешно удалена", "Идея успешно удалена из системы.");
+    await ideas.getIdeasListWithPG()
     modals.modal.show = false;
   } else {
     notifications.showNotification("error", "Ошибка", users.removedUser.message);
@@ -34,11 +34,11 @@ const removeProduct = async () => {
       </div>
       <div class="mt-3 text-center sm:mt-5">
         <p class="text-base font-semibold leading-6 text-gray-900">
-          Хотите удалить продукт?
+          Хотите удалить идею?
         </p>
         <div class="mt-2">
           <p class="text-sm text-gray-500">
-            Продукт будет удален из системы и не сможет быть восстановлен.
+            Идея будет удалена из системы и не сможет быть восстановлена.
           </p>
         </div>
       </div>
@@ -48,7 +48,7 @@ const removeProduct = async () => {
           v-if="!loading"
           type="button"
           class="inline-flex w-full justify-center rounded-md bg-mainColor px-3 py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 sm:col-start-2"
-          @click="removeProduct"
+          @click="removeIdea"
       >
         Подтвердить
       </button>

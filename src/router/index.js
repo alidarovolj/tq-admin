@@ -12,6 +12,9 @@ import ideasView from "@/views/ideas/index.vue";
 import ideasCreate from "@/views/ideas/create/index.vue";
 import filtersView from "@/views/filters/index.vue";
 import productVariantsView from "@/views/products/variants/index.vue";
+import newsView from "@/views/news/index.vue";
+import newsCreate from "@/views/news/create/index.vue";
+import ideasEdit from "@/views/ideas/edit/index.vue";
 
 const routes = [
     {
@@ -56,6 +59,12 @@ const routes = [
         meta: {requiresAuth: true}
     },
     {
+        path: '/ideas/edit/:id',
+        name: "IdeasEdit",
+        component: ideasEdit,
+        meta: {requiresAuth: true}
+    },
+    {
         path: '/products',
         name: "Products",
         component: productsView,
@@ -83,6 +92,18 @@ const routes = [
         path: '/products/create',
         name: "ProductsCreate",
         component: productCreate,
+        meta: {requiresAuth: true}
+    },
+    {
+        path: '/news',
+        name: "News",
+        component: newsView,
+        meta: {requiresAuth: true}
+    },
+    {
+        path: '/news/create',
+        name: "NewsCreate",
+        component: newsCreate,
         meta: {requiresAuth: true}
     },
 ]
