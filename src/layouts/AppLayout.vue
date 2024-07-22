@@ -11,10 +11,10 @@ import {
   HomeIcon,
   LightBulbIcon,
   NewspaperIcon,
-  PlusCircleIcon,
+  AdjustmentsHorizontalIcon,
   TagIcon,
   UsersIcon,
-  XMarkIcon
+  XMarkIcon,
 } from '@heroicons/vue/24/outline'
 import {RouterLink, useRoute} from "vue-router";
 import {storeToRefs} from "pinia";
@@ -27,13 +27,13 @@ const navigation = [
   {name: 'Пользователи', href: '/users', icon: UsersIcon, alias: 'Users', children: []},
   {
     name: 'Продукты', href: '/products', icon: FolderIcon, alias: 'Products', children: [
-      {name: 'Создание', href: '/products/create', icon: PlusCircleIcon, alias: 'ProductsCreate', children: []},
-      {name: 'Вариации', href: '/products/variants', icon: CircleStackIcon, alias: 'ProductsVariants', children: []}
+      {name: 'Вариации', href: '/products/variants', icon: CircleStackIcon, alias: 'ProductsVariants', children: []},
+      {name: 'Бренды', href: '/brands', icon: DocumentDuplicateIcon, alias: 'Brands', children: []},
+      {name: 'Категории', href: '/categories', icon: TagIcon, alias: 'Categories', children: []},
+      {name: 'Фильтры', href: '/filters', icon: AdjustmentsHorizontalIcon, alias: 'Filters', children: []}
     ]
   },
-  {name: 'Категории', href: '/categories', icon: TagIcon, alias: 'Categories', children: []},
   {name: 'Идеи', href: '/ideas', icon: LightBulbIcon, alias: 'Ideas', children: []},
-  {name: 'Бренды', href: '/brands', icon: DocumentDuplicateIcon, alias: 'Brands', children: []},
   {
     name: 'Новости', href: '/news', icon: NewspaperIcon, alias: 'News', children: [
       {name: 'Категории', href: '/news/categories', icon: ChatBubbleLeftIcon, alias: 'Brands', children: []},
@@ -41,9 +41,8 @@ const navigation = [
   },
   // {name: 'Статистика', href: '#', icon: ChartPieIcon, alias: 'Statistics', children: []},
 ]
-const teams = [
-  {id: 1, name: 'Фильтры', href: '/filters', initial: 'F', alias: 'Filters'}
-]
+// const teams = [
+// ]
 
 const sidebarOpen = ref(false)
 
@@ -152,29 +151,29 @@ const {userProfile} = storeToRefs(users)
                         </li>
                       </ul>
                     </li>
-                    <li>
-                      <div class="text-xs font-semibold leading-6 text-gray-400">
-                        Доп. данные
-                      </div>
-                      <ul
-                          role="list"
-                          class="-mx-2 mt-2 space-y-1">
-                        <li
-                            v-for="team in teams"
-                            :key="team.name">
-                          <a
-                              :href="team.href"
-                              :class="[route.name === team.alias ? 'bg-gray-50 text-mainColor' : 'text-gray-700 hover:bg-gray-50 hover:text-mainColor', 'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6']">
-                            <span
-                                :class="[route.name === team.alias ? 'border-mainColor text-mainColor' : 'border-gray-200 text-gray-400 group-hover:border-mainColor group-hover:text-mainColor', 'flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border bg-white text-[0.625rem] font-medium']">
-                              {{ team.initial }}</span>
-                            <span class="truncate">
-                              {{ team.name }}
-                            </span>
-                          </a>
-                        </li>
-                      </ul>
-                    </li>
+<!--                    <li>-->
+<!--                      <div class="text-xs font-semibold leading-6 text-gray-400">-->
+<!--                        Доп. данные-->
+<!--                      </div>-->
+<!--                      <ul-->
+<!--                          role="list"-->
+<!--                          class="-mx-2 mt-2 space-y-1">-->
+<!--                        <li-->
+<!--                            v-for="team in teams"-->
+<!--                            :key="team.name">-->
+<!--                          <a-->
+<!--                              :href="team.href"-->
+<!--                              :class="[route.name === team.alias ? 'bg-gray-50 text-mainColor' : 'text-gray-700 hover:bg-gray-50 hover:text-mainColor', 'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6']">-->
+<!--                            <span-->
+<!--                                :class="[route.name === team.alias ? 'border-mainColor text-mainColor' : 'border-gray-200 text-gray-400 group-hover:border-mainColor group-hover:text-mainColor', 'flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border bg-white text-[0.625rem] font-medium']">-->
+<!--                              {{ team.initial }}</span>-->
+<!--                            <span class="truncate">-->
+<!--                              {{ team.name }}-->
+<!--                            </span>-->
+<!--                          </a>-->
+<!--                        </li>-->
+<!--                      </ul>-->
+<!--                    </li>-->
                   </ul>
                 </nav>
               </div>
@@ -234,29 +233,29 @@ const {userProfile} = storeToRefs(users)
                 </li>
               </ul>
             </li>
-            <li>
-              <div class="text-xs font-semibold leading-6 text-gray-400">
-                Доп. данные
-              </div>
-              <ul
-                  role="list"
-                  class="-mx-2 mt-2 space-y-1">
-                <li
-                    v-for="team in teams"
-                    :key="team.name">
-                  <a
-                      :href="team.href"
-                      :class="[route.name === team.alias ? 'bg-gray-50 text-mainColor' : 'text-gray-700 hover:bg-gray-50 hover:text-mainColor', 'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6']">
-                    <span
-                        :class="[route.name === team.alias ? 'border-mainColor text-mainColor' : 'border-gray-200 text-gray-400 group-hover:border-mainColor group-hover:text-mainColor', 'flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border bg-white text-[0.625rem] font-medium']">
-                      {{ team.initial }}</span>
-                    <span class="truncate">
-                      {{ team.name }}
-                    </span>
-                  </a>
-                </li>
-              </ul>
-            </li>
+<!--            <li>-->
+<!--              <div class="text-xs font-semibold leading-6 text-gray-400">-->
+<!--                Доп. данные-->
+<!--              </div>-->
+<!--              <ul-->
+<!--                  role="list"-->
+<!--                  class="-mx-2 mt-2 space-y-1">-->
+<!--                <li-->
+<!--                    v-for="team in teams"-->
+<!--                    :key="team.name">-->
+<!--                  <a-->
+<!--                      :href="team.href"-->
+<!--                      :class="[route.name === team.alias ? 'bg-gray-50 text-mainColor' : 'text-gray-700 hover:bg-gray-50 hover:text-mainColor', 'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6']">-->
+<!--                    <span-->
+<!--                        :class="[route.name === team.alias ? 'border-mainColor text-mainColor' : 'border-gray-200 text-gray-400 group-hover:border-mainColor group-hover:text-mainColor', 'flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border bg-white text-[0.625rem] font-medium']">-->
+<!--                      {{ team.initial }}</span>-->
+<!--                    <span class="truncate">-->
+<!--                      {{ team.name }}-->
+<!--                    </span>-->
+<!--                  </a>-->
+<!--                </li>-->
+<!--              </ul>-->
+<!--            </li>-->
             <li
                 v-if="userProfile"
                 class="-mx-6 mt-auto">
