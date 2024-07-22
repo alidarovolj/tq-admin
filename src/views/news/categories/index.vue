@@ -11,14 +11,11 @@ const router = useRouter();
 const modals = useModalsStore()
 
 const news = useNewsStore()
-const {newsListWithPG} = storeToRefs(news)
+const {newsCategories} = storeToRefs(news)
 
 const tableData = ref([
   {name: "ID", fn: "id", type: "string"},
-  {name: "Картинка", fn: "image_url", type: "image"},
-  {name: "Название", fn: "title.ru", type: "string"},
-  {name: "Категория", fn: "category.ru", type: "string"},
-  {name: "Дата", fn: "created_at", type: "time"}
+  {name: "Название", fn: "title.ru", type: "string"}
 ])
 
 const page = ref(route.query.page || 1);
@@ -36,7 +33,7 @@ watch([page, perPage], updateQueryParams, {deep: true});
 
 const fetchData = async () => {
   try {
-    await news.getNewsListWithPG()
+    await news.getNewsCategories()
   } catch (error) {
     console.error(error);
   }
@@ -47,7 +44,7 @@ onMounted(fetchData);
 watch([page, perPage], fetchData);
 
 watch(route.query, async () => {
-  await news.getNewsListWithPG(route.query.page, route.query.perPage)
+  await news.getNewsCategories(route.query.page, route.query.perPage)
 });
 </script>
 
@@ -57,28 +54,31 @@ watch(route.query, async () => {
       <div class="sm:flex sm:items-center">
         <div class="sm:flex-auto">
           <h1 class="text-2xl font-semibold leading-6 text-gray-900">
-            Новости
+            Новостные категории
           </h1>
           <p class="mt-2 text-sm text-gray-700">
-            Список всех новостей вашей компании, включая их названия, описания и категории.
+            Список всех категорий новостей вашей компании, включая их названия, описания и категории.
           </p>
         </div>
         <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-          <RouterLink
-              to="/news/create"
-              type="button"
-              class="block rounded-md bg-mainColor px-3 py-2 text-center text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2">
-            Добавить новость
-          </RouterLink>
+
+          <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
+            <button
+                @click="modals.showModal('CreateNewsCategory')"
+                type="button"
+                class="block rounded-md bg-mainColor px-3 py-2 text-center text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2">
+              Добавить категорию
+            </button>
+          </div>
         </div>
       </div>
       <TableComponent
           :tableData="tableData"
-          :fetchedData="newsListWithPG"
+          :fetchedData="newsCategories"
           :edit="true"
           :remove-item="true"
-          @editValue="(data) => router.push('/news/edit/' + data.id)"
-          @removeItem="(data) => modals.showModal('RemoveNews', data)"
+          @removeItem="(data) => modals.showModal('RemoveNewsCategory', data)"
+          @editValue="(data) => modals.showModal('EditNewsCategory', data)"
           @call_to_refresh="fetchData"
       />
     </div>

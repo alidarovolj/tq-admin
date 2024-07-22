@@ -20,7 +20,7 @@ const removeProduct = async () => {
     await products.getProductsList()
     modals.modal.show = false;
   } else {
-    notifications.showNotification("error", "Ошибка", users.removedUser.message);
+    notifications.showNotification("error", "Ошибка", products.removedProduct.message);
   }
   loading.value = false
 }

@@ -14,7 +14,9 @@ import filtersView from "@/views/filters/index.vue";
 import productVariantsView from "@/views/products/variants/index.vue";
 import newsView from "@/views/news/index.vue";
 import newsCreate from "@/views/news/create/index.vue";
+import newsEdit from "@/views/news/edit/index.vue";
 import ideasEdit from "@/views/ideas/edit/index.vue";
+import newsCategories from "@/views/news/categories/index.vue";
 
 const routes = [
     {
@@ -104,6 +106,18 @@ const routes = [
         path: '/news/create',
         name: "NewsCreate",
         component: newsCreate,
+        meta: {requiresAuth: true}
+    },
+    {
+        path: '/news/categories',
+        name: "NewsCategories",
+        component: newsCategories,
+        meta: {requiresAuth: true}
+    },
+    {
+        path: '/news/edit/:id',
+        name: "NewsEdit",
+        component: newsEdit,
         meta: {requiresAuth: true}
     },
 ]

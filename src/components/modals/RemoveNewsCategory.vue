@@ -3,24 +3,24 @@ import {ref} from "vue";
 import {XMarkIcon} from '@heroicons/vue/24/outline'
 import {useModalsStore} from "@/stores/modals.js";
 import {useNotificationStore} from "@/stores/notifications.js";
-import {useIdeasStore} from "@/stores/ideas.js";
+import {useNewsStore} from "@/stores/news.js";
 
 const loading = ref(false)
 
 const modals = useModalsStore()
-const ideas = useIdeasStore()
+const news = useNewsStore()
 const notifications = useNotificationStore();
 
-const removeIdea = async () => {
+const removeNewsCategory = async () => {
   loading.value = true
 
-  await ideas.removeIdea(modals.modal.modalData.id)
-  if (ideas.removedIdea !== false) {
-    notifications.showNotification("success", "Идея успешно удалена", "Идея успешно удалена из системы.");
-    await ideas.getIdeasListWithPG()
+  await news.removeNewsCategory(modals.modal.modalData.id)
+  if (news.removedNewsCategory !== false) {
+    notifications.showNotification("success", "Новостная категория успешно удалена", "Новостная категория успешно удалена из системы.");
+    await news.getNewsCategories()
     modals.modal.show = false;
   } else {
-    notifications.showNotification("error", "Ошибка", ideas.removedIdea.message);
+    notifications.showNotification("error", "Ошибка", news.removedNewsCategory.message);
   }
   loading.value = false
 }
@@ -34,11 +34,11 @@ const removeIdea = async () => {
       </div>
       <div class="mt-3 text-center sm:mt-5">
         <p class="text-base font-semibold leading-6 text-gray-900">
-          Хотите удалить идею?
+          Хотите удалить новостную категорию?
         </p>
         <div class="mt-2">
           <p class="text-sm text-gray-500">
-            Идея будет удалена из системы и не сможет быть восстановлена.
+            Новостная категория будет удалена из системы и не сможет быть восстановлена.
           </p>
         </div>
       </div>
@@ -48,7 +48,7 @@ const removeIdea = async () => {
           v-if="!loading"
           type="button"
           class="inline-flex w-full justify-center rounded-md bg-mainColor px-3 py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 sm:col-start-2"
-          @click="removeIdea"
+          @click="removeNewsCategory"
       >
         Подтвердить
       </button>

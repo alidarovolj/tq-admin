@@ -100,10 +100,10 @@ const createNews = async () => {
   }
   await news.createNews(form.value);
   if (news.createdNews !== false) {
-    notifications.showNotification("success", "Бренд успешно создан!", "Бренд успешно создан, его можно увидеть в списке брендов.");
+    notifications.showNotification("success", "Новость успешно создана!", "Новость успешно создана, ее можно увидеть в списке новостей.");
     await news.getNewsListWithPG();
   } else {
-    notifications.showNotification("error", "Ошибка создания бренда!", news.createdNews.message);
+    notifications.showNotification("error", "Ошибка создания новости!", news.createdNews.message);
   }
   loading.value = false;
 };

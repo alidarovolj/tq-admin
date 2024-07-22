@@ -1,19 +1,20 @@
 <script setup>
 import {useUsersStore} from "@/stores/users.js";
-import {onMounted, nextTick, ref} from "vue";
+import {ref} from "vue";
 import {Dialog, DialogPanel, TransitionChild, TransitionRoot} from '@headlessui/vue'
 import {
-  LightBulbIcon,
   Bars3Icon,
-  TagIcon,
+  ChatBubbleLeftIcon,
   CircleStackIcon,
   DocumentDuplicateIcon,
   FolderIcon,
   HomeIcon,
-  UsersIcon,
-  XMarkIcon,
+  LightBulbIcon,
+  NewspaperIcon,
   PlusCircleIcon,
-    NewspaperIcon
+  TagIcon,
+  UsersIcon,
+  XMarkIcon
 } from '@heroicons/vue/24/outline'
 import {RouterLink, useRoute} from "vue-router";
 import {storeToRefs} from "pinia";
@@ -33,7 +34,11 @@ const navigation = [
   {name: 'Категории', href: '/categories', icon: TagIcon, alias: 'Categories', children: []},
   {name: 'Идеи', href: '/ideas', icon: LightBulbIcon, alias: 'Ideas', children: []},
   {name: 'Бренды', href: '/brands', icon: DocumentDuplicateIcon, alias: 'Brands', children: []},
-  {name: 'Новости', href: '/news', icon: NewspaperIcon, alias: 'News', children: []},
+  {
+    name: 'Новости', href: '/news', icon: NewspaperIcon, alias: 'News', children: [
+      {name: 'Категории', href: '/news/categories', icon: ChatBubbleLeftIcon, alias: 'Brands', children: []},
+    ]
+  },
   // {name: 'Статистика', href: '#', icon: ChartPieIcon, alias: 'Statistics', children: []},
 ]
 const teams = [
@@ -309,7 +314,7 @@ const {userProfile} = storeToRefs(users)
           <slot/>
         </div>
       </div>
-      <Footer />
+      <Footer/>
     </main>
   </div>
 </template>
