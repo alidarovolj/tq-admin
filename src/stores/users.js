@@ -25,7 +25,7 @@ export const useUsersStore = defineStore('users', () => {
         removedUser,
         async getProfile() {
             try {
-                const response = await api(`/api/auth/me`, "GET", {}, route.query);
+                const response = await api(`/auth/me`, "GET", {}, route.query);
                 const data = response.data;
                 userProfile.value = data;
             } catch (e) {
@@ -43,7 +43,7 @@ export const useUsersStore = defineStore('users', () => {
         },
         async getUserList() {
             try {
-                const response = await api(`/api/admin/users`, "GET", {}, route.query);
+                const response = await api(`/users`, "GET", {}, route.query);
                 const data = response.data;
                 userList.value = data;
             } catch (e) {
@@ -84,7 +84,7 @@ export const useUsersStore = defineStore('users', () => {
         },
         async editUser(id, form) {
             try {
-                const response = await api(`/api/admin/users/${id}`, "PUT", {
+                const response = await api(`/users/${id}`, "PUT", {
                     body: JSON.stringify(form)
                 }, route.query);
                 const data = response.data;
@@ -153,7 +153,7 @@ export const useUsersStore = defineStore('users', () => {
         },
         async removeUser(id) {
             try {
-                const response = await api(`/api/admin/users/${id}`, "DELETE");
+                const response = await api(`/users/${id}`, "DELETE");
                 const data = response.data;
                 removedUser.value = data;
             } catch (e) {

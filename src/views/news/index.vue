@@ -43,12 +43,6 @@ const fetchData = async () => {
 };
 
 onMounted(fetchData);
-
-watch([page, perPage], fetchData);
-
-watch(route.query, async () => {
-  await news.getNewsListWithPG(route.query.page, route.query.perPage)
-});
 </script>
 
 <template>
@@ -65,21 +59,21 @@ watch(route.query, async () => {
         </div>
         <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
           <RouterLink
+              class="block rounded-md bg-mainColor px-3 py-2 text-center text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
               to="/news/create"
-              type="button"
-              class="block rounded-md bg-mainColor px-3 py-2 text-center text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2">
+              type="button">
             Добавить новость
           </RouterLink>
         </div>
       </div>
       <TableComponent
-          :tableData="tableData"
-          :fetchedData="newsListWithPG"
           :edit="true"
+          :fetchedData="newsListWithPG"
           :remove-item="true"
+          :tableData="tableData"
+          @call_to_refresh="fetchData"
           @editValue="(data) => router.push('/news/edit/' + data.id)"
           @removeItem="(data) => modals.showModal('RemoveNews', data)"
-          @call_to_refresh="fetchData"
       />
     </div>
   </div>

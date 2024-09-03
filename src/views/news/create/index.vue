@@ -34,8 +34,7 @@ const form = ref({
     ru: "",
     en: "",
     kz: ""
-  },
-  category_id: null
+  }
 });
 
 const options = ref({
@@ -63,8 +62,7 @@ const v$ = useVuelidate({
   content: {
     ru: {required},
   },
-  image_url: {required},
-  category_id: {required}
+  image_url: {required}
 }, form);
 
 const page = ref(route.query.page || 1);
@@ -83,7 +81,6 @@ watch([page, perPage], updateQueryParams, {deep: true});
 const fetchData = async () => {
   try {
     await nextTick()
-    await news.getNewsCategories()
   } catch (error) {
     console.error(error);
   }
@@ -99,9 +96,10 @@ const createNews = async () => {
     return;
   }
   await news.createNews(form.value);
-  if (news.createdNews !== false) {
+  if (news.message) {
     notifications.showNotification("success", "Новость успешно создана!", "Новость успешно создана, ее можно увидеть в списке новостей.");
     await news.getNewsListWithPG();
+    await router.push('/news');
   } else {
     notifications.showNotification("error", "Ошибка создания новости!", news.createdNews.message);
   }
@@ -121,8 +119,8 @@ watch([page, perPage], fetchData);
           <div>
             <div>
               <RouterLink
-                  to="/news"
-                  class="flex gap-2 items-center mb-5">
+                  class="flex gap-2 items-center mb-5"
+                  to="/news">
                 <div>
                   <ArrowLongLeftIcon class="w-5 h-5"/>
                 </div>
@@ -135,8 +133,8 @@ watch([page, perPage], fetchData);
                   Создание новости
                 </p>
                 <button
-                    type="button"
                     class="inline-flex w-max justify-center rounded-md bg-mainColor px-3 py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 sm:col-start-2"
+                    type="button"
                     @click="createNews"
                 >
                   Создать
@@ -147,57 +145,36 @@ watch([page, perPage], fetchData);
               </p>
             </div>
             <UploadImage
-                class="mb-3"
                 :class="{ '!border-red-500': v$.image_url.$error }"
-                type="news"
+                class="mb-3"
+                type="products"
                 @photoUploaded="(image) => form.image_url = image"
             />
-            <div
-                v-if="news.newsCategories"
-                :class="{ '!border-red-500': v$.category_id.$error }"
-                class="mb-3 text-xs p-3 border rounded-md">
-              <p class="block font-medium text-gray-900 mb-2">
-                Категория
-              </p>
-              <select
-                  v-model="form.category_id"
-                  name=""
-                  id=""
-                  class="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6">
-                <option :value="null">Выберите категорию</option>
-                <option
-                    v-for="(item, index) of news.newsCategories.data"
-                    :key="index"
-                    :value="item.id">
-                  {{ item.title.ru }}
-                </option>
-              </select>
-            </div>
             <div class="rounded-md px-3 pb-1.5 pt-2.5 border mb-3">
               <div class="flex gap-3 mb-3 text-sm">
                 <p
-                    @click="currentLanguage = 'ru'"
                     :class="[
                       { 'bg-mainColor text-white': currentLanguage === 'ru' },
                       { '!border !border-red-500': v$.title.ru.$error || v$.description.ru.$error }
                   ]"
-                    class="bg-gray-200 px-4 py-2 rounded-md cursor-pointer">
+                    class="bg-gray-200 px-4 py-2 rounded-md cursor-pointer"
+                    @click="currentLanguage = 'ru'">
                   Русский
                 </p>
                 <p
-                    @click="currentLanguage = 'kz'"
                     :class="[
                       { 'bg-mainColor text-white': currentLanguage === 'kz' }
                   ]"
-                    class="bg-gray-200 px-4 py-2 rounded-md cursor-pointer">
+                    class="bg-gray-200 px-4 py-2 rounded-md cursor-pointer"
+                    @click="currentLanguage = 'kz'">
                   Казахский
                 </p>
                 <p
-                    @click="currentLanguage = 'en'"
                     :class="[
                       { 'bg-mainColor text-white': currentLanguage === 'en' }
                   ]"
-                    class="bg-gray-200 px-4 py-2 rounded-md cursor-pointer">
+                    class="bg-gray-200 px-4 py-2 rounded-md cursor-pointer"
+                    @click="currentLanguage = 'en'">
                   Английский
                 </p>
               </div>
@@ -206,30 +183,30 @@ watch([page, perPage], fetchData);
                     :class="{ '!border !border-red-500': v$.title.ru.$error }"
                     class="mb-3 rounded-md px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
                   <label
-                      for="name"
-                      class="block text-xs font-medium text-gray-900">
+                      class="block text-xs font-medium text-gray-900"
+                      for="name">
                     Название
                   </label>
                   <input
-                      v-model="form.title.ru"
-                      type="text"
-                      name="name"
                       id="name"
+                      v-model="form.title.ru"
                       class="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                      name="name"
                       placeholder="Новости в мире красок"
+                      type="text"
                   />
                 </div>
                 <div
                     :class="{ '!border-red-500': v$.description.ru.$error }"
                     class="mb-3 text-xs p-3 border rounded-md">
                   <label
-                      for="name"
-                      class="block font-medium text-gray-900 mb-2">
+                      class="block font-medium text-gray-900 mb-2"
+                      for="name">
                     Описание
                   </label>
                   <QuillEditor
-                      :options="options"
                       v-model:content="form.description.ru"
+                      :options="options"
                       contentType="html"
                   />
                 </div>
@@ -237,17 +214,17 @@ watch([page, perPage], fetchData);
                     :class="{ '!border-red-500': v$.content.ru.$error }"
                     class="mb-3 text-xs p-3 border rounded-md">
                   <label
-                      for="name"
-                      class="block text-xs font-medium text-gray-900 mb-2">
+                      class="block text-xs font-medium text-gray-900 mb-2"
+                      for="name">
                     Контент
                   </label>
                   <main id="sample">
                     <Editor
-                        api-key="wbs5iypxhs4wvkwvvz760zl88zept4h3f91k4cxa8k57uwy4"
                         v-model="form.content.ru"
                         :init="{
         plugins: 'lists link image table code help wordcount'
       }"
+                        api-key="wbs5iypxhs4wvkwvvz760zl88zept4h3f91k4cxa8k57uwy4"
                     />
                   </main>
                 </div>
@@ -256,44 +233,44 @@ watch([page, perPage], fetchData);
                 <div
                     class="mb-3 rounded-md px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
                   <label
-                      for="name"
-                      class="block text-xs font-medium text-gray-900">
+                      class="block text-xs font-medium text-gray-900"
+                      for="name">
                     Название
                   </label>
                   <input
-                      v-model="form.title.kz"
-                      type="text"
-                      name="name"
                       id="name"
+                      v-model="form.title.kz"
                       class="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                      name="name"
                       placeholder="Бояулар әлеміндегі жаңалықтар"
+                      type="text"
                   />
                 </div>
                 <div class="mb-3 text-xs p-3 border rounded-md">
                   <label
-                      for="name"
-                      class="block font-medium text-gray-900 mb-2">
+                      class="block font-medium text-gray-900 mb-2"
+                      for="name">
                     Описание
                   </label>
                   <QuillEditor
-                      :options="options_kz"
                       v-model:content="form.description.kz"
+                      :options="options_kz"
                       contentType="html"
                   />
                 </div>
                 <div class="mb-3 text-xs p-3 border rounded-md">
                   <label
-                      for="name"
-                      class="block text-xs font-medium text-gray-900 mb-2">
+                      class="block text-xs font-medium text-gray-900 mb-2"
+                      for="name">
                     Контент
                   </label>
                   <main id="sample">
                     <Editor
-                        api-key="wbs5iypxhs4wvkwvvz760zl88zept4h3f91k4cxa8k57uwy4"
                         v-model="form.content.kz"
                         :init="{
         plugins: 'lists link image table code help wordcount'
       }"
+                        api-key="wbs5iypxhs4wvkwvvz760zl88zept4h3f91k4cxa8k57uwy4"
                     />
                   </main>
                 </div>
@@ -302,45 +279,45 @@ watch([page, perPage], fetchData);
                 <div
                     class="mb-3 rounded-md px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
                   <label
-                      for="name"
-                      class="block text-xs font-medium text-gray-900">
+                      class="block text-xs font-medium text-gray-900"
+                      for="name">
                     Название
                   </label>
                   <input
-                      v-model="form.title.en"
-                      type="text"
-                      name="name"
                       id="name"
+                      v-model="form.title.en"
                       class="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                      name="name"
                       placeholder="News in the world of paints"
+                      type="text"
                   />
                 </div>
                 <div class="mb-3 text-xs p-3 border rounded-md">
                   <label
-                      for="name"
-                      class="block font-medium text-gray-900 mb-2">
+                      class="block font-medium text-gray-900 mb-2"
+                      for="name">
                     Описание
                   </label>
                   <QuillEditor
-                      :options="options_en"
                       v-model:content="form.description.en"
+                      :options="options_en"
                       contentType="html"
                   />
                 </div>
 
                 <div class="mb-3 text-xs p-3 border rounded-md">
                   <label
-                      for="name"
-                      class="block text-xs font-medium text-gray-900 mb-2">
+                      class="block text-xs font-medium text-gray-900 mb-2"
+                      for="name">
                     Контент
                   </label>
                   <main id="sample">
                     <Editor
-                        api-key="wbs5iypxhs4wvkwvvz760zl88zept4h3f91k4cxa8k57uwy4"
                         v-model="form.content.en"
                         :init="{
         plugins: 'lists link image table code help wordcount'
       }"
+                        api-key="wbs5iypxhs4wvkwvvz760zl88zept4h3f91k4cxa8k57uwy4"
                     />
                   </main>
                 </div>

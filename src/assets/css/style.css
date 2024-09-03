@@ -21,6 +21,7 @@ html {
     box-sizing: border-box;
     animation: rotation 1s linear infinite;
 }
+
 .spinner::after,
 .spinner::before {
     content: '';
@@ -40,6 +41,7 @@ html {
     animation: rotationBack 0.5s linear infinite;
     transform-origin: center center;
 }
+
 .spinner::before {
     width: 32px;
     height: 32px;
@@ -55,6 +57,7 @@ html {
         transform: rotate(360deg);
     }
 }
+
 @keyframes rotationBack {
     0% {
         transform: rotate(0deg);

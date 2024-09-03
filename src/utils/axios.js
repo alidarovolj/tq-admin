@@ -1,9 +1,9 @@
-import { ref } from "vue";
-import { stringify } from "qs";
-import { defu } from "defu";
+import {ref} from "vue";
+import {stringify} from "qs";
+import {defu} from "defu";
 import axios from "axios";
-import { useRouter } from "vue-router";
-import { useNotificationStore } from "@/stores/notifications.js";
+import {useRouter} from "vue-router";
+import {useNotificationStore} from "@/stores/notifications.js";
 
 export async function api(url, method, options = {}, query = {}) {
     const token = ref(localStorage.getItem('token'));

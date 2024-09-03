@@ -21,7 +21,7 @@ export const useCategoriesStore = defineStore('categories', () => {
         editedCategory,
         async getCategoriesList() {
             try {
-                const response = await api(`/api/admin/categories/all`, "GET", {}, route.query);
+                const response = await api(`/catalog`, "GET", {}, route.query);
                 const data = response.data;
                 categoriesList.value = data;
             } catch (e) {

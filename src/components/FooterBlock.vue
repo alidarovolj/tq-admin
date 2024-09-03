@@ -1,17 +1,17 @@
 <template>
-  <footer class="bg-white" aria-labelledby="footer-heading">
+  <footer aria-labelledby="footer-heading" class="bg-white">
     <h2 id="footer-heading" class="sr-only">Footer</h2>
     <div class="mx-auto max-w-7xl px-6 pb-8 pt-16 sm:pt-24 lg:px-8 lg:pt-32">
       <div class="xl:grid xl:grid-cols-3 xl:gap-8">
         <div class="space-y-8">
-          <img class="h-7" src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600" alt="Company name"/>
+          <img alt="Company name" class="h-7" src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"/>
           <p class="text-sm leading-6 text-gray-600">Making the world a better place through constructing elegant
             hierarchies.</p>
           <div class="flex space-x-6">
             <a v-for="item in navigation.social" :key="item.name" :href="item.href"
                class="text-gray-400 hover:text-gray-500">
               <span class="sr-only">{{ item.name }}</span>
-              <component :is="item.icon" class="h-6 w-6" aria-hidden="true"/>
+              <component :is="item.icon" aria-hidden="true" class="h-6 w-6"/>
             </a>
           </div>
         </div>
@@ -19,7 +19,7 @@
           <div class="md:grid md:grid-cols-2 md:gap-8">
             <div>
               <h3 class="text-sm font-semibold leading-6 text-gray-900">Solutions</h3>
-              <ul role="list" class="mt-6 space-y-4">
+              <ul class="mt-6 space-y-4" role="list">
                 <li v-for="item in navigation.solutions" :key="item.name">
                   <a :href="item.href" class="text-sm leading-6 text-gray-600 hover:text-gray-900">{{ item.name }}</a>
                 </li>
@@ -27,7 +27,7 @@
             </div>
             <div class="mt-10 md:mt-0">
               <h3 class="text-sm font-semibold leading-6 text-gray-900">Support</h3>
-              <ul role="list" class="mt-6 space-y-4">
+              <ul class="mt-6 space-y-4" role="list">
                 <li v-for="item in navigation.support" :key="item.name">
                   <a :href="item.href" class="text-sm leading-6 text-gray-600 hover:text-gray-900">{{ item.name }}</a>
                 </li>
@@ -37,7 +37,7 @@
           <div class="md:grid md:grid-cols-2 md:gap-8">
             <div>
               <h3 class="text-sm font-semibold leading-6 text-gray-900">Company</h3>
-              <ul role="list" class="mt-6 space-y-4">
+              <ul class="mt-6 space-y-4" role="list">
                 <li v-for="item in navigation.company" :key="item.name">
                   <a :href="item.href" class="text-sm leading-6 text-gray-600 hover:text-gray-900">{{ item.name }}</a>
                 </li>
@@ -45,7 +45,7 @@
             </div>
             <div class="mt-10 md:mt-0">
               <h3 class="text-sm font-semibold leading-6 text-gray-900">Legal</h3>
-              <ul role="list" class="mt-6 space-y-4">
+              <ul class="mt-6 space-y-4" role="list">
                 <li v-for="item in navigation.legal" :key="item.name">
                   <a :href="item.href" class="text-sm leading-6 text-gray-600 hover:text-gray-900">{{ item.name }}</a>
                 </li>

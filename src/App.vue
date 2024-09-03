@@ -1,6 +1,6 @@
 <script setup>
-import { computed } from 'vue';
-import { useRoute } from 'vue-router';
+import {computed} from 'vue';
+import {useRoute} from 'vue-router';
 import Notifications from "@/components/Notifications.vue";
 import AppLayout from "@/layouts/AppLayout.vue";
 import ModalDialog from "@/components/ModalDialog.vue";
@@ -21,7 +21,7 @@ const showLayout = computed(() => route.fullPath !== '/login');
       <RouterView/>
     </template>
     <Notifications/>
-    <ModalDialog />
+    <ModalDialog/>
   </div>
 </template>
 

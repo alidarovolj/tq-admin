@@ -1,5 +1,5 @@
 <script setup>
-import {ref, watch, onMounted} from "vue";
+import {onMounted, ref, watch} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import TableComponent from "@/components/TableComponent.vue";
 import {useProductsStore} from "@/stores/products.js";
@@ -15,11 +15,11 @@ const {productsList} = storeToRefs(products)
 
 const tableData = ref([
   {name: "ID", fn: "id", type: "string"},
-  {name: "Артикул", fn: "article", type: "string"},
-  {name: "Фото", fn: "image_url", type: "image"},
-  {name: "Название", fn: "title.ru", type: "string"},
+  {name: "Название", fn: "name", type: "string"},
+  {name: "Цена", fn: "price", type: "string"},
+  {name: "Фото", fn: "icon", type: "image"},
   {name: "Статус", fn: "is_active", type: "boolean"},
-  {name: "Категория", fn: "category.title.ru", type: "string"}
+  {name: "Категория", fn: "category.name", type: "string"}
 ])
 
 const page = ref(route.query.page || 1);
@@ -64,26 +64,16 @@ watch(route.query, async () => {
             Список всех продуктов вашей компании, включая их названия, описания и категории.
           </p>
         </div>
-        <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-          <RouterLink
-              to="/products/create"
-              type="button"
-              class="block rounded-md bg-mainColor px-3 py-2 text-center text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2">
-            Добавить продукт
-          </RouterLink>
-        </div>
       </div>
       <TableComponent
-          :tableData="tableData"
           :fetchedData="productsList"
-          :edit="true"
+          :remove-item="true"
           :search="true"
           :set-active="'is_active'"
-          :remove-item="true"
+          :tableData="tableData"
           @call_to_refresh="fetchData"
-          @editValue="(data) => router.push(`/products/edit/${data.id}`)"
-          @setActive="(data) => modals.showModal('SetActiveProduct', data)"
           @removeItem="(data) => modals.showModal('RemoveProduct', data)"
+          @setActive="(data) => modals.showModal('SetActiveProduct', data)"
       />
     </div>
   </div>

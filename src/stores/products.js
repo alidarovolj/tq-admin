@@ -30,7 +30,7 @@ export const useProductsStore = defineStore('products', () => {
         changedVariantRemains,
         async getProductsList() {
             try {
-                const response = await api(`/api/admin/products/`, "GET", {}, route.query);
+                const response = await api(`/products/`, "GET", {}, route.query);
                 const data = response.data;
                 productsList.value = data;
             } catch (e) {
@@ -66,7 +66,7 @@ export const useProductsStore = defineStore('products', () => {
         },
         async createProduct(form) {
             try {
-                const response = await api(`api/admin/products`, "POST", {
+                const response = await api(`/products`, "POST", {
                     body: JSON.stringify(form)
                 }, route.query);
                 const data = response.data;
@@ -89,7 +89,7 @@ export const useProductsStore = defineStore('products', () => {
         },
         async detailProduct(id, form) {
             try {
-                const response = await api(`api/admin/products/${id}`, "GET");
+                const response = await api(`/products/${id}`, "GET");
                 const data = response.data;
                 detailProductResult.value = data;
             } catch (e) {
@@ -133,9 +133,7 @@ export const useProductsStore = defineStore('products', () => {
         },
         async setActive(id, form) {
             try {
-                const response = await api(`api/admin/products/${id}`, "PATCH", {
-                    body: JSON.stringify(form)
-                }, route.query);
+                const response = await api(`/products/${id}/status?status=${form.is_active}`, "PATCH", {}, route.query);
                 const data = response.data;
                 activeResult.value = data;
             } catch (e) {
@@ -156,7 +154,7 @@ export const useProductsStore = defineStore('products', () => {
         },
         async removeProduct(id) {
             try {
-                const response = await api(`api/admin/products/${id}`, "DELETE", {}, route.query);
+                const response = await api(`/products/${id}`, "DELETE", {}, route.query);
                 const data = response.data;
                 removedProduct.value = data;
             } catch (e) {

@@ -1,8 +1,8 @@
-import { defineStore } from 'pinia';
-import { ref } from 'vue';
-import { api } from "@/utils/axios.js";
-import { useNotificationStore } from "@/stores/notifications.js";
-import { useRoute } from "vue-router";
+import {defineStore} from 'pinia';
+import {ref} from 'vue';
+import {api} from "@/utils/axios.js";
+import {useNotificationStore} from "@/stores/notifications.js";
+import {useRoute} from "vue-router";
 
 export const useFiltersStore = defineStore('filters', () => {
     const filtersList = ref(null);

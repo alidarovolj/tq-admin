@@ -63,34 +63,36 @@ watch(() => route.query.searchKeyword, () => {
             class="sm:px-6 lg:px-8 mb-5 w-1/3">
           <div>
             <label
-                for="email"
-                class="block text-sm font-medium leading-6 text-gray-900">
+                class="block text-sm font-medium leading-6 text-gray-900"
+                for="email">
               Поиск по имени/названию
             </label>
-            <div class="mt-2 flex rounded-md shadow-sm">
+            <form
+                @submit.prevent="handleSearch"
+                class="mt-2 flex rounded-md shadow-sm">
               <div class="relative flex flex-grow items-stretch focus-within:z-10">
                 <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                   <UsersIcon
-                      class="h-5 w-5 text-gray-400"
                       aria-hidden="true"
+                      class="h-5 w-5 text-gray-400"
                   />
                 </div>
                 <input
-                    v-model="searchValue"
-                    type="text"
-                    name="search"
                     id="search"
+                    v-model="searchValue"
                     class="block w-full rounded-none rounded-l-md border-0 py-1.5 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    name="search"
                     placeholder="Поиск..."
+                    type="text"
                 />
               </div>
-              <button type="button"
-                      @click="handleSearch"
-                      class="relative -ml-px inline-flex items-center gap-x-1.5 rounded-r-md px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
-                <MagnifyingGlassIcon class="-ml-0.5 h-5 w-5 text-gray-400" aria-hidden="true"/>
+              <button
+                  class="relative -ml-px inline-flex items-center gap-x-1.5 rounded-r-md px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                  type="submit">
+                <MagnifyingGlassIcon aria-hidden="true" class="-ml-0.5 h-5 w-5 text-gray-400"/>
                 Найти
               </button>
-            </div>
+            </form>
           </div>
         </div>
         <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
@@ -100,14 +102,14 @@ watch(() => route.query.searchKeyword, () => {
               <th
                   v-for="(item, index) in tableData"
                   :key="index"
-                  scope="col"
-                  class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900">
+                  class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900"
+                  scope="col">
                 {{ item.name }}
               </th>
               <th
                   v-if="edit || makeAdmin || changePassword || removeItem || setActive || changePrice || changeRemains"
-                  scope="col"
-                  class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900">
+                  class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900"
+                  scope="col">
                 <p>
                   Действия
                 </p>
@@ -128,6 +130,15 @@ watch(() => route.query.searchKeyword, () => {
                     v-if="it.type === 'string' && getNestedProperty(item, it.fn)"
                     v-html="getNestedProperty(item, it.fn)">
                 </p>
+                <div
+                    v-else-if="it.type === 'array'">
+                  <p
+                      v-for="(it, ind) of getNestedProperty(item, it.fn)"
+                      :key="ind"
+                  >
+                    {{ it.product }}
+                  </p>
+                </div>
                 <p
                     v-else-if="it.type === 'string' && !getNestedProperty(item, it.fn)"
                     class="text-red-500">
@@ -159,15 +170,15 @@ watch(() => route.query.searchKeyword, () => {
                 <div v-else>
                   <img
                       v-if="!getNestedProperty(item, it.fn)"
-                      class="w-10 h-10 min-h-10 min-w-10 object-contain"
-                      src="@/assets/img/logos/logo.svg"
                       alt=""
+                      class="w-10 h-10 min-h-10 min-w-10 object-contain"
+                      src="@/assets/img/logos/main.png"
                   />
                   <img
                       v-else
-                      class="w-10 h-10 min-h-10 min-w-10 object-contain"
                       :src="getNestedProperty(item, it.fn)"
                       alt=""
+                      class="w-10 h-10 min-h-10 min-w-10 object-contain"
                   />
                 </div>
               </td>
@@ -176,46 +187,46 @@ watch(() => route.query.searchKeyword, () => {
                   class="pl-4 py-5 relative whitespace-nowrap pr-4 text-right text-sm font-medium sm:pr-6 lg:pr-8 flex gap-1">
                 <p
                     v-if="edit"
-                    @click="emit('editValue', item)"
-                    class="text-mainColor cursor-pointer w-max">
+                    class="text-mainColor cursor-pointer w-max"
+                    @click="emit('editValue', item)">
                   <PencilSquareIcon class="w-5 h-5"/>
                 </p>
                 <p
                     v-if="setActive"
-                    @click="emit('setActive', item)"
-                    class="text-mainColor cursor-pointer w-max">
+                    class="text-mainColor cursor-pointer w-max"
+                    @click="emit('setActive', item)">
                   <CheckIcon v-if="!item[setActive]" class="w-5 h-5"/>
                   <XMarkIcon v-else class="w-5 h-5"/>
                 </p>
                 <p
                     v-if="makeAdmin"
-                    @click="emit('setAdmin', item)"
-                    class="text-mainColor cursor-pointer w-max">
+                    class="text-mainColor cursor-pointer w-max"
+                    @click="emit('setAdmin', item)">
                   <UserPlusIcon v-if="!item[makeAdmin]" class="w-5 h-5"/>
                   <UserMinusIcon v-else class="w-5 h-5"/>
                 </p>
                 <p
                     v-if="changePrice"
-                    @click="emit('changePrice', item)"
-                    class="text-mainColor cursor-pointer w-max">
+                    class="text-mainColor cursor-pointer w-max"
+                    @click="emit('changePrice', item)">
                   <CircleStackIcon class="w-5 h-5"/>
                 </p>
                 <p
                     v-if="changeRemains"
-                    @click="emit('changeRemains', item)"
-                    class="text-mainColor cursor-pointer w-max">
+                    class="text-mainColor cursor-pointer w-max"
+                    @click="emit('changeRemains', item)">
                   <RectangleStackIcon class="w-5 h-5"/>
                 </p>
                 <p
                     v-if="changePassword"
-                    @click="emit('changePassword', item)"
-                    class="text-mainColor cursor-pointer w-max">
+                    class="text-mainColor cursor-pointer w-max"
+                    @click="emit('changePassword', item)">
                   <KeyIcon class="w-5 h-5"/>
                 </p>
                 <p
                     v-if="removeItem"
-                    @click="emit('removeItem', item)"
-                    class="text-mainColor cursor-pointer w-max">
+                    class="text-mainColor cursor-pointer w-max"
+                    @click="emit('removeItem', item)">
                   <TrashIcon class="w-5 h-5"/>
                 </p>
               </td>

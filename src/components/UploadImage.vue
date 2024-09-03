@@ -21,7 +21,7 @@ const uploadPhoto = async () => {
   formData.append('type', props.type);
 
   try {
-    const response = await axios.post(`${import.meta.env.VITE_APP_BASE_URL}/api/admin/image`, formData, {
+    const response = await axios.post(`${import.meta.env.VITE_APP_BASE_URL}/image`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
         "Authorization": "Bearer " + localStorage.getItem('token')
@@ -39,19 +39,19 @@ const uploadPhoto = async () => {
 
 <template>
   <label
-      for="fileUpload"
-      class="relative text-xs block w-full rounded-lg border-2 border-dashed border-gray-300 p-12 text-center hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+      class="relative text-xs block w-full rounded-lg border-2 border-dashed border-gray-300 p-12 text-center hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+      for="fileUpload">
     <div class="relative z-10">
       <PhotoIcon class="w-12 h-12 text-gray-400 mx-auto"/>
       <p class="block font-medium text-gray-900 mb-2">
         Загрузите фотографию
       </p>
       <input
-          type="file"
           id="fileUpload"
-          name="fileUpload"
-          accept="image/jpeg, image/png, image/jpg"
           ref="fileInput"
+          accept="image/jpeg, image/png, image/jpg"
+          name="fileUpload"
+          type="file"
           @change="uploadPhoto"
       />
     </div>

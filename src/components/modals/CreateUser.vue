@@ -39,7 +39,7 @@ const createUser = async () => {
     return;
   }
   await users.createUser(form.value);
-  if(form.value.password === form.value.password_confirmation) {
+  if (form.value.password === form.value.password_confirmation) {
     if (users.createdUser !== false) {
       notifications.showNotification("success", "Пользователь успешно создан!", "Пользователь успешно создан, его можно увидеть в списке пользователей.");
       await users.getUserList()
@@ -70,70 +70,70 @@ const createUser = async () => {
             :class="{ '!border !border-red-500': v$.name.$error }"
             class="mb-2 rounded-md px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
           <label
-              for="name"
-              class="block text-xs font-medium text-gray-900">
+              class="block text-xs font-medium text-gray-900"
+              for="name">
             Имя
           </label>
           <input
-              v-model="form.name"
-              type="text"
-              name="name"
               id="name"
+              v-model="form.name"
               class="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+              name="name"
               placeholder="Иван Иванов"
+              type="text"
           />
         </div>
         <div
             :class="{ '!border !border-red-500': v$.phone_number.$error }"
             class="mb-2 rounded-md px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
           <label
-              for="name"
-              class="block text-xs font-medium text-gray-900">
+              class="block text-xs font-medium text-gray-900"
+              for="name">
             Номер телефона
           </label>
           <input
-              type="text"
+              id="phone"
               v-model="form.phone_number"
               v-maska
+              class="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
               data-maska="+7 (###) ###-##-##"
               name="phone"
-              id="phone"
-              class="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
               placeholder="+7 (###) ###-##-##"
+              type="text"
           />
         </div>
         <div
             :class="{ '!border !border-red-500': v$.email.$error }"
             class="mb-2 rounded-md px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
           <label
-              for="name"
-              class="block text-xs font-medium text-gray-900">
+              class="block text-xs font-medium text-gray-900"
+              for="name">
             Email
           </label>
           <input
-              v-model="form.email"
-              type="email"
-              name="email"
               id="email"
+              v-model="form.email"
               class="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+              name="email"
               placeholder="example@example.com"
+              type="email"
           />
         </div>
         <div
             :class="{ '!border !border-red-500': v$.password.$error }"
             class="mb-2 rounded-md px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
           <label
-              for="name"
-              class="block text-xs font-medium text-gray-900">
+              class="block text-xs font-medium text-gray-900"
+              for="name">
             Пароль
           </label>
           <input
-              v-model="form.password"
-              type="password"
-              name="password"
               id="password"
+              v-model="form.password"
               class="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+              name="password"
               placeholder="••••••••••"
+              type="password"
           />
         </div>
         <ul class="list-disc pl-5 mb-5 text-xs">
@@ -148,24 +148,24 @@ const createUser = async () => {
             :class="{ '!border !border-red-500': v$.password_confirmation.$error }"
             class="rounded-md px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
           <label
-              for="name"
-              class="block text-xs font-medium text-gray-900">
+              class="block text-xs font-medium text-gray-900"
+              for="name">
             Подтверждение пароля
           </label>
           <input
-              v-model="form.password_confirmation"
-              type="password"
-              name="password_confirmation"
               id="password_confirmation"
+              v-model="form.password_confirmation"
               class="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+              name="password_confirmation"
               placeholder="••••••••••"
+              type="password"
           />
         </div>
         <div class="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
           <button
               v-if="!loading"
-              type="button"
               class="inline-flex w-full justify-center rounded-md bg-mainColor px-3 py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 sm:col-start-2"
+              type="button"
               @click="createUser"
           >
             Создать
@@ -176,10 +176,10 @@ const createUser = async () => {
             <span class="spinner"></span>
           </div>
           <button
-              type="button"
+              ref="cancelButtonRef"
               class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:col-start-1 sm:mt-0"
-              @click="modals.modal.show = false"
-              ref="cancelButtonRef">
+              type="button"
+              @click="modals.modal.show = false">
             Отменить
           </button>
         </div>

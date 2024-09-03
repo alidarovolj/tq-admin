@@ -81,30 +81,30 @@ onMounted(async () => {
     <div class="rounded-md px-3 pb-1.5 pt-2.5 border mb-3">
       <div class="flex gap-3 mb-3 text-sm">
         <p
-            @click="currentLanguage = 'ru'"
             :class="[
                       { 'bg-mainColor text-white': currentLanguage === 'ru' },
                       { '!border !border-red-500': v$Edit.title.ru.$error }
                   ]"
-            class="bg-gray-200 px-4 py-2 rounded-md cursor-pointer">
+            class="bg-gray-200 px-4 py-2 rounded-md cursor-pointer"
+            @click="currentLanguage = 'ru'">
           Русский
         </p>
         <p
-            @click="currentLanguage = 'kz'"
             :class="[
                       { 'bg-mainColor text-white': currentLanguage === 'kz' },
                       { '!border !border-red-500': v$Edit.title.kz.$error }
                   ]"
-            class="bg-gray-200 px-4 py-2 rounded-md cursor-pointer">
+            class="bg-gray-200 px-4 py-2 rounded-md cursor-pointer"
+            @click="currentLanguage = 'kz'">
           Казахский
         </p>
         <p
-            @click="currentLanguage = 'en'"
             :class="[
                       { 'bg-mainColor text-white': currentLanguage === 'en' },
                       { '!border !border-red-500': v$Edit.title.en.$error }
                   ]"
-            class="bg-gray-200 px-4 py-2 rounded-md cursor-pointer">
+            class="bg-gray-200 px-4 py-2 rounded-md cursor-pointer"
+            @click="currentLanguage = 'en'">
           Английский
         </p>
       </div>
@@ -113,17 +113,17 @@ onMounted(async () => {
             :class="{ '!border !border-red-500': v$Edit.title.ru.$error }"
             class="rounded-md px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
           <label
-              for="name"
-              class="block text-xs font-medium text-gray-900">
+              class="block text-xs font-medium text-gray-900"
+              for="name">
             Название
           </label>
           <input
-              v-model="formEdit.title.ru"
-              type="text"
-              name="name"
               id="name"
+              v-model="formEdit.title.ru"
               class="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+              name="name"
               placeholder="Название категории"
+              type="text"
           />
         </div>
       </div>
@@ -132,17 +132,17 @@ onMounted(async () => {
             :class="{ '!border !border-red-500': v$Edit.title.kz.$error }"
             class="rounded-md px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
           <label
-              for="name"
-              class="block text-xs font-medium text-gray-900">
+              class="block text-xs font-medium text-gray-900"
+              for="name">
             Название
           </label>
           <input
-              v-model="formEdit.title.kz"
-              type="text"
-              name="name"
               id="name"
+              v-model="formEdit.title.kz"
               class="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+              name="name"
               placeholder="Санат атауы"
+              type="text"
           />
         </div>
       </div>
@@ -151,17 +151,17 @@ onMounted(async () => {
             :class="{ '!border !border-red-500': v$Edit.title.en.$error }"
             class="rounded-md px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
           <label
-              for="name"
-              class="block text-xs font-medium text-gray-900">
+              class="block text-xs font-medium text-gray-900"
+              for="name">
             Название
           </label>
           <input
-              v-model="formEdit.title.en"
-              type="text"
-              name="name"
               id="name"
+              v-model="formEdit.title.en"
               class="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+              name="name"
               placeholder="Name of category"
+              type="text"
           />
         </div>
       </div>
@@ -186,14 +186,14 @@ onMounted(async () => {
               class="relative flex items-start">
             <div class="flex h-6 items-center">
               <input
-                  @click="formEdit.filter_ids.includes(item.id) ? formEdit.filter_ids = formEdit.filter_ids.filter(id => id !== item.id) : formEdit.filter_ids.push(item.id)"
                   :id="item.id"
-                  aria-describedby="comments-description"
-                  :name="item.id"
-                  type="checkbox"
-                  class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                  :value="item.id"
                   :checked="formEdit.filter_ids.includes(item.id)"
+                  :name="item.id"
+                  :value="item.id"
+                  aria-describedby="comments-description"
+                  class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                  type="checkbox"
+                  @click="formEdit.filter_ids.includes(item.id) ? formEdit.filter_ids = formEdit.filter_ids.filter(id => id !== item.id) : formEdit.filter_ids.push(item.id)"
               />
             </div>
             <div class="ml-3 leading-6">
@@ -206,8 +206,8 @@ onMounted(async () => {
     <div class="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
       <button
           v-if="!loading"
-          type="button"
           class="inline-flex w-full justify-center rounded-md bg-mainColor px-3 py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 sm:col-start-2"
+          type="button"
           @click="editCategory"
       >
         Сохранить
@@ -218,10 +218,10 @@ onMounted(async () => {
         <span class="spinner"></span>
       </div>
       <button
-          type="button"
+          ref="cancelButtonRef"
           class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:col-start-1 sm:mt-0"
-          @click="modals.modal.show = false"
-          ref="cancelButtonRef">
+          type="button"
+          @click="modals.modal.show = false">
         Отменить
       </button>
     </div>

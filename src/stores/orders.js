@@ -4,18 +4,18 @@ import {api} from "@/utils/axios.js";
 import {useNotificationStore} from "@/stores/notifications.js";
 import {useRoute} from "vue-router";
 
-export const useImagesStore = defineStore('images', () => {
-    const uploadedImage = ref(null);
+export const useOrdersStore = defineStore('orders', () => {
+    const ordersList = ref(null);
     const notifications = useNotificationStore();
     const route = useRoute();
 
     return {
-        uploadedImage,
-        async getFiltersList() {
+        ordersList,
+        async getOrdersList() {
             try {
-                const response = await api(`/api/filters/all`, "GET", {}, route.query);
+                const response = await api(`/orders`, "GET", {}, route.query);
                 const data = response.data;
-                uploadedImage.value = data;
+                ordersList.value = data;
             } catch (e) {
                 if (e.response) {
                     if (e.response.status !== 500) {
@@ -28,6 +28,6 @@ export const useImagesStore = defineStore('images', () => {
                     notifications.showNotification("error", "Произошла ошибка", "Неизвестная ошибка");
                 }
             }
-        }
+        },
     };
 });

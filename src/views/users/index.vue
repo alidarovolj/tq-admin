@@ -17,8 +17,12 @@ const modals = useModalsStore()
 const tableData = ref([
   {name: "ID", fn: "id", type: "string"},
   {name: "Имя", fn: "name", type: "string"},
-  {name: "Email", fn: "email", type: "string"},
-  {name: "Номер телефона", fn: "phone_number", type: "string"},
+  {name: "Город", fn: "city.name", type: "string"},
+  {name: "Номер телефона", fn: "phone", type: "string"},
+  {name: "Тип цены", fn: "price_type.title", type: "string"},
+  {name: "Адрес", fn: "delivery_address", type: "string"},
+  {name: "Сотрудник", fn: "employee.name", type: "string"},
+  {name: "Тип доставки", fn: "delivery_type", type: "string"},
   {name: "Администратор", fn: "is_admin", type: "boolean"}
 ]);
 
@@ -35,10 +39,6 @@ const editData = (data) => {
 
 const setAdmin = async (data) => {
   modals.showModal('SetAdmin', data)
-};
-
-const changePassword = (data) => {
-  modals.showModal('ChangePassword', data)
 };
 
 const removeItem = (data) => {
@@ -83,26 +83,24 @@ watch(route.query, async () => {
         </div>
         <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
           <button
-              @click="modals.showModal('CreateUser')"
+              class="block rounded-md bg-mainColor px-3 py-2 text-center text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
               type="button"
-              class="block rounded-md bg-mainColor px-3 py-2 text-center text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2">
+              @click="modals.showModal('CreateUser')">
             Добавить пользователя
           </button>
         </div>
       </div>
       <TableComponent
           :edit="true"
-          :search="true"
-          :makeAdmin="'is_admin'"
-          :changePassword="true"
-          :tableData="tableData"
           :fetchedData="userList"
+          :makeAdmin="'is_admin'"
           :remove-item="true"
-          @editValue="editData"
-          @setAdmin="setAdmin"
-          @changePassword="changePassword"
-          @removeItem="removeItem"
+          :search="true"
+          :tableData="tableData"
           @call_to_refresh="fetchData"
+          @editValue="editData"
+          @removeItem="removeItem"
+          @setAdmin="setAdmin"
       />
     </div>
   </div>

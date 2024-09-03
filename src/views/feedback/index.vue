@@ -1,21 +1,24 @@
 <script setup>
 import {onMounted, ref, watch} from "vue";
 import {useRoute, useRouter} from "vue-router";
+import TableComponent from "@/components/TableComponent.vue";
 import {storeToRefs} from "pinia";
 import {useModalsStore} from "@/stores/modals.js";
-import TableComponent from "@/components/TableComponent.vue";
-import {useFiltersStore} from "@/stores/filters.js";
+import {useFeedbackStore} from "@/stores/feedback.js";
 
 const route = useRoute();
 const router = useRouter();
-
-const filters = useFiltersStore()
-const {filtersListWithPG} = storeToRefs(filters)
 const modals = useModalsStore()
+
+const feedback = useFeedbackStore()
+const {feedbackList} = storeToRefs(feedback)
 
 const tableData = ref([
   {name: "ID", fn: "id", type: "string"},
-  {name: "Название", fn: "title.ru", type: "string"},
+  {name: "Имя", fn: "name", type: "string"},
+  {name: "Email", fn: "email", type: "string"},
+  {name: "Телефон", fn: "phone", type: "string"},
+  {name: "Содержимое", fn: "note", type: "string"}
 ])
 
 const page = ref(route.query.page || 1);
@@ -23,10 +26,6 @@ const perPage = ref(route.query.perPage || 10);
 
 const updateQueryParams = async () => {
   await router.push({query: {...route.query, page: page.value, perPage: perPage.value}});
-};
-
-const setActive = (data) => {
-  modals.showModal('SetActiveCategory', data)
 };
 
 onMounted(() => {
@@ -37,7 +36,7 @@ watch([page, perPage], updateQueryParams, {deep: true});
 
 const fetchData = async () => {
   try {
-    await filters.getFiltersListWithPG()
+    await feedback.getFeedbackList()
   } catch (error) {
     console.error(error);
   }
@@ -48,7 +47,7 @@ onMounted(fetchData);
 watch([page, perPage], fetchData);
 
 watch(route.query, async () => {
-  await filters.getFiltersListWithPG(route.query.page, route.query.perPage)
+  await feedback.getFeedbackList(route.query.page, route.query.perPage)
 });
 </script>
 
@@ -58,28 +57,16 @@ watch(route.query, async () => {
       <div class="sm:flex sm:items-center">
         <div class="sm:flex-auto">
           <h1 class="text-2xl font-semibold leading-6 text-gray-900">
-            Фильтры
+            Обращения
           </h1>
           <p class="mt-2 text-sm text-gray-700">
-            Список всех фильтров вашей компании, а также возможность добавления новых фильтров.
+            Список всех обращений к вашей компании, включая их статусы, даты и суммы.
           </p>
-        </div>
-        <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-          <button
-              @click="modals.showModal('CreateFilter')"
-              type="button"
-              class="block rounded-md bg-mainColor px-3 py-2 text-center text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2">
-            Добавить фильтр
-          </button>
         </div>
       </div>
       <TableComponent
+          :fetchedData="feedbackList"
           :tableData="tableData"
-          :fetchedData="filtersListWithPG"
-          :remove-item="true"
-          :edit="true"
-          @editValue="(data) => modals.showModal('EditFilter', data)"
-          @remove-item="(data) => modals.showModal('RemoveFilter', data)"
           @call_to_refresh="fetchData"
       />
     </div>

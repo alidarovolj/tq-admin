@@ -4,17 +4,13 @@ import {ref} from "vue";
 import {Dialog, DialogPanel, TransitionChild, TransitionRoot} from '@headlessui/vue'
 import {
   Bars3Icon,
-  ChatBubbleLeftIcon,
   CircleStackIcon,
-  DocumentDuplicateIcon,
+  EnvelopeIcon,
   FolderIcon,
   HomeIcon,
-  LightBulbIcon,
   NewspaperIcon,
-  AdjustmentsHorizontalIcon,
-  TagIcon,
   UsersIcon,
-  XMarkIcon,
+  XMarkIcon
 } from '@heroicons/vue/24/outline'
 import {RouterLink, useRoute} from "vue-router";
 import {storeToRefs} from "pinia";
@@ -23,26 +19,12 @@ import Footer from "@/components/Footer.vue";
 const route = useRoute()
 
 const navigation = [
-  {name: 'Главная панель', href: '/', icon: HomeIcon, alias: 'Dashboard', children: []},
   {name: 'Пользователи', href: '/users', icon: UsersIcon, alias: 'Users', children: []},
-  {
-    name: 'Продукты', href: '/products', icon: FolderIcon, alias: 'Products', children: [
-      {name: 'Вариации', href: '/products/variants', icon: CircleStackIcon, alias: 'ProductsVariants', children: []},
-      {name: 'Бренды', href: '/brands', icon: DocumentDuplicateIcon, alias: 'Brands', children: []},
-      {name: 'Категории', href: '/categories', icon: TagIcon, alias: 'Categories', children: []},
-      {name: 'Фильтры', href: '/filters', icon: AdjustmentsHorizontalIcon, alias: 'Filters', children: []}
-    ]
-  },
-  {name: 'Идеи', href: '/ideas', icon: LightBulbIcon, alias: 'Ideas', children: []},
-  {
-    name: 'Новости', href: '/news', icon: NewspaperIcon, alias: 'News', children: [
-      {name: 'Категории', href: '/news/categories', icon: ChatBubbleLeftIcon, alias: 'Brands', children: []},
-    ]
-  },
-  // {name: 'Статистика', href: '#', icon: ChartPieIcon, alias: 'Statistics', children: []},
+  {name: 'Продукты', href: '/products', icon: FolderIcon, alias: 'Products', children: []},
+  {name: 'Заказы', href: '/orders', icon: CircleStackIcon, alias: 'Orders', children: []},
+  {name: 'Обращения', href: '/messages', icon: EnvelopeIcon, alias: 'Messages', children: []},
+  {name: 'Новости', href: '/news', icon: NewspaperIcon, alias: 'News', children: []},
 ]
-// const teams = [
-// ]
 
 const sidebarOpen = ref(false)
 
@@ -53,8 +35,8 @@ const {userProfile} = storeToRefs(users)
 <template>
   <div>
     <TransitionRoot
-        as="template"
-        :show="sidebarOpen">
+        :show="sidebarOpen"
+        as="template">
       <Dialog
           class="relative z-50 lg:hidden"
           @close="sidebarOpen = false">
@@ -89,15 +71,15 @@ const {userProfile} = storeToRefs(users)
                   leave-to="opacity-0">
                 <div class="absolute left-full top-0 flex w-16 justify-center pt-5">
                   <button
-                      type="button"
                       class="-m-2.5 p-2.5"
+                      type="button"
                       @click="sidebarOpen = false">
                     <span class="sr-only">
                       Close sidebar
                     </span>
                     <XMarkIcon
-                        class="h-6 w-6 text-white"
                         aria-hidden="true"
+                        class="h-6 w-6 text-white"
                     />
                   </button>
                 </div>
@@ -106,25 +88,25 @@ const {userProfile} = storeToRefs(users)
               <div class="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 pb-2">
                 <div class="flex h-16 shrink-0 items-center">
                   <img
-                      class="h-8 w-auto"
-                      src="@/assets/img/logos/logo.svg"
                       alt="Your Company"
+                      class="h-8 w-auto"
+                      src="@/assets/img/logos/main.png"
                   />
                 </div>
                 <nav class="flex flex-1 flex-col">
                   <ul
-                      role="list"
-                      class="flex flex-1 flex-col gap-y-7">
+                      class="flex flex-1 flex-col gap-y-7"
+                      role="list">
                     <li>
                       <ul
-                          role="list"
-                          class="-mx-2 space-y-1">
+                          class="-mx-2 space-y-1"
+                          role="list">
                         <li
                             v-for="item in navigation"
                             :key="item.name">
                           <RouterLink
-                              :to="item.href"
-                              :class="[route.name === item.alias ? 'bg-gray-50 text-mainColor' : 'text-gray-700 hover:bg-gray-50 hover:text-mainColor', 'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6']">
+                              :class="[route.name === item.alias ? 'bg-gray-50 text-mainColor' : 'text-gray-700 hover:bg-gray-50 hover:text-mainColor', 'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6']"
+                              :to="item.href">
                             <component
                                 :is="item.icon"
                                 :class="[route.name === item.alias ? 'text-mainColor' : 'text-gray-400 group-hover:text-mainColor', 'h-6 w-6 shrink-0']"
@@ -138,8 +120,8 @@ const {userProfile} = storeToRefs(users)
                             <RouterLink
                                 v-for="(child, ind) in item.children"
                                 :key="ind"
-                                :to="child.href"
-                                :class="[route.name === child.alias ? 'bg-gray-50 text-mainColor' : 'text-gray-700 hover:bg-gray-50 hover:text-mainColor', 'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6']">
+                                :class="[route.name === child.alias ? 'bg-gray-50 text-mainColor' : 'text-gray-700 hover:bg-gray-50 hover:text-mainColor', 'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6']"
+                                :to="child.href">
                               <component
                                   :is="child.icon"
                                   :class="[route.name === child.alias ? 'text-mainColor' : 'text-gray-400 group-hover:text-mainColor', 'h-6 w-6 shrink-0']"
@@ -151,29 +133,29 @@ const {userProfile} = storeToRefs(users)
                         </li>
                       </ul>
                     </li>
-<!--                    <li>-->
-<!--                      <div class="text-xs font-semibold leading-6 text-gray-400">-->
-<!--                        Доп. данные-->
-<!--                      </div>-->
-<!--                      <ul-->
-<!--                          role="list"-->
-<!--                          class="-mx-2 mt-2 space-y-1">-->
-<!--                        <li-->
-<!--                            v-for="team in teams"-->
-<!--                            :key="team.name">-->
-<!--                          <a-->
-<!--                              :href="team.href"-->
-<!--                              :class="[route.name === team.alias ? 'bg-gray-50 text-mainColor' : 'text-gray-700 hover:bg-gray-50 hover:text-mainColor', 'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6']">-->
-<!--                            <span-->
-<!--                                :class="[route.name === team.alias ? 'border-mainColor text-mainColor' : 'border-gray-200 text-gray-400 group-hover:border-mainColor group-hover:text-mainColor', 'flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border bg-white text-[0.625rem] font-medium']">-->
-<!--                              {{ team.initial }}</span>-->
-<!--                            <span class="truncate">-->
-<!--                              {{ team.name }}-->
-<!--                            </span>-->
-<!--                          </a>-->
-<!--                        </li>-->
-<!--                      </ul>-->
-<!--                    </li>-->
+                    <!--                    <li>-->
+                    <!--                      <div class="text-xs font-semibold leading-6 text-gray-400">-->
+                    <!--                        Доп. данные-->
+                    <!--                      </div>-->
+                    <!--                      <ul-->
+                    <!--                          role="list"-->
+                    <!--                          class="-mx-2 mt-2 space-y-1">-->
+                    <!--                        <li-->
+                    <!--                            v-for="team in teams"-->
+                    <!--                            :key="team.name">-->
+                    <!--                          <a-->
+                    <!--                              :href="team.href"-->
+                    <!--                              :class="[route.name === team.alias ? 'bg-gray-50 text-mainColor' : 'text-gray-700 hover:bg-gray-50 hover:text-mainColor', 'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6']">-->
+                    <!--                            <span-->
+                    <!--                                :class="[route.name === team.alias ? 'border-mainColor text-mainColor' : 'border-gray-200 text-gray-400 group-hover:border-mainColor group-hover:text-mainColor', 'flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border bg-white text-[0.625rem] font-medium']">-->
+                    <!--                              {{ team.initial }}</span>-->
+                    <!--                            <span class="truncate">-->
+                    <!--                              {{ team.name }}-->
+                    <!--                            </span>-->
+                    <!--                          </a>-->
+                    <!--                        </li>-->
+                    <!--                      </ul>-->
+                    <!--                    </li>-->
                   </ul>
                 </nav>
               </div>
@@ -189,25 +171,25 @@ const {userProfile} = storeToRefs(users)
       <div class="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6">
         <div class="flex h-16 shrink-0 items-center">
           <img
-              class="h-8 w-auto"
-              src="@/assets/img/logos/logo.svg"
               alt="Your Company"
+              class="h-8 w-auto"
+              src="@/assets/img/logos/main.png"
           />
         </div>
         <nav class="flex flex-1 flex-col">
           <ul
-              role="list"
-              class="flex flex-1 flex-col gap-y-7">
+              class="flex flex-1 flex-col gap-y-7"
+              role="list">
             <li>
               <ul
-                  role="list"
-                  class="-mx-2 space-y-1">
+                  class="-mx-2 space-y-1"
+                  role="list">
                 <li
                     v-for="item in navigation"
                     :key="item.name">
                   <RouterLink
-                      :to="item.href"
-                      :class="[route.name === item.alias ? 'bg-gray-50 text-mainColor' : 'text-gray-700 hover:bg-gray-50 hover:text-mainColor', 'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6']">
+                      :class="[route.name === item.alias ? 'bg-gray-50 text-mainColor' : 'text-gray-700 hover:bg-gray-50 hover:text-mainColor', 'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6']"
+                      :to="item.href">
                     <component
                         :is="item.icon"
                         :class="[route.name === item.alias ? 'text-mainColor' : 'text-gray-400 group-hover:text-mainColor', 'h-6 w-6 shrink-0']"
@@ -220,8 +202,8 @@ const {userProfile} = storeToRefs(users)
                     <RouterLink
                         v-for="(child, ind) in item.children"
                         :key="ind"
-                        :to="child.href"
-                        :class="[route.name === child.alias ? 'bg-gray-50 text-mainColor' : 'text-gray-700 hover:bg-gray-50 hover:text-mainColor', 'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6']">
+                        :class="[route.name === child.alias ? 'bg-gray-50 text-mainColor' : 'text-gray-700 hover:bg-gray-50 hover:text-mainColor', 'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6']"
+                        :to="child.href">
                       <component
                           :is="child.icon"
                           :class="[route.name === child.alias ? 'text-mainColor' : 'text-gray-400 group-hover:text-mainColor', 'h-6 w-6 shrink-0']"
@@ -233,39 +215,39 @@ const {userProfile} = storeToRefs(users)
                 </li>
               </ul>
             </li>
-<!--            <li>-->
-<!--              <div class="text-xs font-semibold leading-6 text-gray-400">-->
-<!--                Доп. данные-->
-<!--              </div>-->
-<!--              <ul-->
-<!--                  role="list"-->
-<!--                  class="-mx-2 mt-2 space-y-1">-->
-<!--                <li-->
-<!--                    v-for="team in teams"-->
-<!--                    :key="team.name">-->
-<!--                  <a-->
-<!--                      :href="team.href"-->
-<!--                      :class="[route.name === team.alias ? 'bg-gray-50 text-mainColor' : 'text-gray-700 hover:bg-gray-50 hover:text-mainColor', 'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6']">-->
-<!--                    <span-->
-<!--                        :class="[route.name === team.alias ? 'border-mainColor text-mainColor' : 'border-gray-200 text-gray-400 group-hover:border-mainColor group-hover:text-mainColor', 'flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border bg-white text-[0.625rem] font-medium']">-->
-<!--                      {{ team.initial }}</span>-->
-<!--                    <span class="truncate">-->
-<!--                      {{ team.name }}-->
-<!--                    </span>-->
-<!--                  </a>-->
-<!--                </li>-->
-<!--              </ul>-->
-<!--            </li>-->
+            <!--            <li>-->
+            <!--              <div class="text-xs font-semibold leading-6 text-gray-400">-->
+            <!--                Доп. данные-->
+            <!--              </div>-->
+            <!--              <ul-->
+            <!--                  role="list"-->
+            <!--                  class="-mx-2 mt-2 space-y-1">-->
+            <!--                <li-->
+            <!--                    v-for="team in teams"-->
+            <!--                    :key="team.name">-->
+            <!--                  <a-->
+            <!--                      :href="team.href"-->
+            <!--                      :class="[route.name === team.alias ? 'bg-gray-50 text-mainColor' : 'text-gray-700 hover:bg-gray-50 hover:text-mainColor', 'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6']">-->
+            <!--                    <span-->
+            <!--                        :class="[route.name === team.alias ? 'border-mainColor text-mainColor' : 'border-gray-200 text-gray-400 group-hover:border-mainColor group-hover:text-mainColor', 'flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border bg-white text-[0.625rem] font-medium']">-->
+            <!--                      {{ team.initial }}</span>-->
+            <!--                    <span class="truncate">-->
+            <!--                      {{ team.name }}-->
+            <!--                    </span>-->
+            <!--                  </a>-->
+            <!--                </li>-->
+            <!--              </ul>-->
+            <!--            </li>-->
             <li
                 v-if="userProfile"
                 class="-mx-6 mt-auto">
               <a
-                  href="#"
-                  class="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-50">
+                  class="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-50"
+                  href="#">
                 <img
+                    alt=""
                     class="h-8 w-8 rounded-full bg-gray-50"
-                    src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                    alt=""/>
+                    src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"/>
                 <span class="sr-only">
                   Your profile
                 </span>
@@ -281,15 +263,15 @@ const {userProfile} = storeToRefs(users)
 
     <div class="sticky top-0 z-40 flex items-center gap-x-6 bg-white px-4 py-4 shadow-sm sm:px-6 lg:hidden">
       <button
-          type="button"
           class="-m-2.5 p-2.5 text-gray-700 lg:hidden"
+          type="button"
           @click="sidebarOpen = true">
         <span class="sr-only">
           Open sidebar
         </span>
         <Bars3Icon
-            class="h-6 w-6"
             aria-hidden="true"
+            class="h-6 w-6"
         />
       </button>
       <div class="flex-1 text-sm font-semibold leading-6 text-gray-900">
@@ -300,9 +282,9 @@ const {userProfile} = storeToRefs(users)
           Your profile
         </span>
         <img
+            alt=""
             class="h-8 w-8 rounded-full bg-gray-50"
             src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-            alt=""
         />
       </a>
     </div>

@@ -1,8 +1,8 @@
 <script setup>
-import { Dialog, DialogPanel, TransitionChild, TransitionRoot } from "@headlessui/vue";
-import { XMarkIcon } from "@heroicons/vue/24/outline";
-import { useModalsStore } from "@/stores/modals.js";
-import { computed, defineAsyncComponent } from 'vue';
+import {Dialog, DialogPanel, TransitionChild, TransitionRoot} from "@headlessui/vue";
+import {XMarkIcon} from "@heroicons/vue/24/outline";
+import {useModalsStore} from "@/stores/modals.js";
+import {computed, defineAsyncComponent} from 'vue';
 
 const modals = useModalsStore();
 
@@ -20,8 +20,8 @@ const closeModal = () => {
 
 <template>
   <TransitionRoot
-      as="template"
-      :show="isModalVisible">
+      :show="isModalVisible"
+      as="template">
     <Dialog
         class="relative z-10"
         @close="closeModal">
@@ -50,14 +50,14 @@ const closeModal = () => {
                 class="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
               <div class="absolute right-0 top-0 hidden pr-4 pt-4 sm:block">
                 <button
-                    type="button"
                     class="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                    type="button"
                     @click="closeModal">
                   <span class="sr-only">Close</span>
-                  <XMarkIcon class="h-6 w-6" aria-hidden="true"/>
+                  <XMarkIcon aria-hidden="true" class="h-6 w-6"/>
                 </button>
               </div>
-              <component :is="getModalComponent(modals.modal.modalName)" />
+              <component :is="getModalComponent(modals.modal.modalName)"/>
             </DialogPanel>
           </TransitionChild>
         </div>
